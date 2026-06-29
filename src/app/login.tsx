@@ -1,5 +1,5 @@
-import LoginForm from "@/components/login";
-import SignupForm from "@/components/signup";
+import LoginForm from "@/components/login-form";
+import SignupForm from "@/components/signup-form";
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function LoginScreen() {
+export default function Login() {
   const insets = useSafeAreaInsets();
   const [isLogin, setIsLogin] = useState(true);
 

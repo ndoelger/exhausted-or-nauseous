@@ -1,19 +1,10 @@
 import { useState } from "react";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { supabase } from "../../utils/supabase";
 
-export default function SignupForm() {
+export default function LoginForm() {
   const [userInput, setUserInput] = useState({
-    firstName: "",
-    lastName: "",
-    username: "",
     email: "",
-    confirmEmail: "",
     password: "",
   });
 
@@ -21,34 +12,23 @@ export default function SignupForm() {
     setUserInput({ ...userInput, [field]: value });
   };
 
+  const handleSubmit = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: userInput.email,
+        password: userInput.password,
+      });
+      if (error) throw error;
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <View style={styles.form}>
-      <Text style={styles.title}>Sign Up</Text>
+      <Text style={styles.title}>Log In</Text>
 
-      <TextInput
-        autoCapitalize='none'
-        placeholder='First Name'
-        placeholderTextColor='#888'
-        style={styles.input}
-        value={userInput.firstName}
-        onChangeText={handleInput("firstName")}
-      />
-      <TextInput
-        autoCapitalize='none'
-        placeholder='Last Name'
-        placeholderTextColor='#888'
-        style={styles.input}
-        value={userInput.lastName}
-        onChangeText={handleInput("lastName")}
-      />
-      <TextInput
-        autoCapitalize='none'
-        placeholder='Username'
-        placeholderTextColor='#888'
-        style={styles.input}
-        value={userInput.username}
-        onChangeText={handleInput("username")}
-      />
       <TextInput
         autoCapitalize='none'
         keyboardType='email-address'
@@ -58,15 +38,7 @@ export default function SignupForm() {
         value={userInput.email}
         onChangeText={handleInput("email")}
       />
-      <TextInput
-        autoCapitalize='none'
-        keyboardType='email-address'
-        placeholder='Confirm Email'
-        placeholderTextColor='#888'
-        style={styles.input}
-        value={userInput.confirmEmail}
-        onChangeText={handleInput("confirmEmail")}
-      />
+
       <TextInput
         autoCapitalize='none'
         placeholder='Password'
