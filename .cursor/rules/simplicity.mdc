@@ -1,0 +1,13 @@
+---
+description: Keep solutions simple — get the job done without over-engineering
+alwaysApply: true
+---
+
+# Simplicity
+
+It doesn't need to be too intricate or sophisticated with advanced notations — just get the job done.
+
+- Prefer the smallest correct change over abstractions or clever patterns
+- Avoid unnecessary helpers, layers, or generic utilities for one-off use
+- Skip advanced notation or heavy architecture unless the task clearly requires it
+- Match existing project style rather than introducing new conventions
