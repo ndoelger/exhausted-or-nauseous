@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Login from './login';
 import Home from './home';
-interface User {
+export interface Profile {
     id: string;
     email: string;
     firstName: string;
@@ -11,14 +11,13 @@ interface User {
 
 const Index = () => {
 
-    const [user, setUser] = useState<User | null>(null);
+    const [profile, setProfile] = useState<Profile | null>(null);
     
 
   return (
-    !user ? <Login setUser={setUser} /> : <Home user={user} />
+    !profile ? <Login setProfile={setProfile} /> : <Home />
   )
 }
-
 
 
 export default Index;

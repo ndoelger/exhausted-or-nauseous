@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { supabase } from "../../utils/supabase";
+import { router } from "expo-router";
+import { Profile } from "@/app/index";
 
-export default function SignupForm() {
+import { devSignup } from "@/dev/fixtures/auth";
+
+type Props = {
+  setProfile: (profile: Profile) => void;
+}
+
+const SignupForm = ({ setProfile }: Props) => {
   const [userInput, setUserInput] = useState({
     firstName: "",
     lastName: "",
@@ -21,6 +29,13 @@ export default function SignupForm() {
       const { data, error } = await supabase.auth.signUp({
         email: userInput.email,
         password: userInput.password,
+        options: {
+          data: {
+            firstName: userInput.firstName,
+            lastName: userInput.lastName,
+            username: userInput.username,
+          },
+        },
       });
 
       if (error) {
@@ -30,11 +45,32 @@ export default function SignupForm() {
       }
     } catch (error) {
       console.error(error);
+      return;
     }
+
+    
+
+    setUserInput({
+      firstName: "",
+      lastName: "",
+      username: "",
+      email: "",
+      confirmEmail: "",
+      password: "",
+    });
+
+    router.push("/home");
+
   };
 
   return (
     <View style={styles.form}>
+      {__DEV__ && (
+        <Pressable onPress={() => setUserInput(devSignup)}>
+          <Text>Fill test data</Text>
+        </Pressable>
+      )}
+
       <Text style={styles.title}>Sign Up</Text>
 
       <TextInput
@@ -97,7 +133,9 @@ export default function SignupForm() {
       </Pressable>
     </View>
   );
-}
+};
+
+export default SignupForm;
 
 const styles = StyleSheet.create({
   form: {

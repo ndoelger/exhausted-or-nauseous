@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { supabase } from "../../utils/supabase";
+import { Profile } from "@/app/index";
 
-export default function LoginForm() {
+
+type Props = {
+  setProfile: (profile: Profile) => void;
+}
+
+const LoginForm = ({ setProfile }: Props) => {
   const [userInput, setUserInput] = useState({
     email: "",
     password: "",
@@ -56,7 +62,9 @@ export default function LoginForm() {
       </Pressable>
     </View>
   );
-}
+};
+
+export default LoginForm;
 
 const styles = StyleSheet.create({
   form: {

@@ -1,3 +1,4 @@
+import { Profile } from "@/app/index";
 import LoginForm from "@/components/login-form";
 import SignupForm from "@/components/signup-form";
 import { useState } from "react";
@@ -11,7 +12,11 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function Login() {
+type Props = {
+  setProfile: (profile: Profile) => void;
+};
+
+const Login = ({ setProfile }: Props) => {
   const insets = useSafeAreaInsets();
   const [isLogin, setIsLogin] = useState(true);
 
@@ -30,7 +35,11 @@ export default function Login() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.wrapper}
       >
-        {isLogin ? <LoginForm /> : <SignupForm />}
+        {isLogin ? (
+          <LoginForm setProfile={setProfile} />
+        ) : (
+          <SignupForm setProfile={setProfile} />
+        )}
         <View style={styles.form}>
           <Pressable
             onPress={() => setIsLogin(!isLogin)}
@@ -44,7 +53,9 @@ export default function Login() {
       </KeyboardAvoidingView>
     </View>
   );
-}
+};
+
+export default Login;
 
 const styles = StyleSheet.create({
   container: {
