@@ -8,6 +8,8 @@ create table public.profiles (
 
 alter table public.profiles enable row level security;
 
+grant select, insert, update, delete on table public.profiles to authenticated;
+
 create policy "Users access own profile"
   on public.profiles
   for all

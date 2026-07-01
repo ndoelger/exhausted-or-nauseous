@@ -1,12 +1,12 @@
+import { Profile } from "@/app/index";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { supabase } from "../../utils/supabase";
-import { router } from "expo-router";
-import { Profile } from "@/app/index";
 
 import { devSignup } from "@/dev/fixtures/auth";
 
-type Props = {
+interface Props {
   setProfile: (profile: Profile) => void;
 }
 
@@ -48,8 +48,6 @@ const SignupForm = ({ setProfile }: Props) => {
       return;
     }
 
-    
-
     setUserInput({
       firstName: "",
       lastName: "",
@@ -59,8 +57,7 @@ const SignupForm = ({ setProfile }: Props) => {
       password: "",
     });
 
-    router.push("/home");
-
+    router.push("/");
   };
 
   return (
