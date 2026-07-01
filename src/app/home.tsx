@@ -1,5 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Profile } from ".";
+import { supabase } from "../../utils/supabase";
+import { router } from "expo-router";
 
 interface Props {
   profile: Profile;
@@ -7,12 +9,15 @@ interface Props {
 
 const Home = ({ profile }: Props) => {
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.text}>{profile.firstName}</Text>
       <Text style={styles.text}>{profile.lastName}</Text>
       <Text style={styles.text}>{profile.email}</Text>
       <Text style={styles.text}>{profile.username}</Text>
       <Text style={styles.text}>{profile.id}</Text>
+      <Pressable onPress={() => {supabase.auth.signOut(); router.push("/login") }}>
+        <Text style={styles.text}>Sign Out</Text>
+      </Pressable>
     </View>
   );
 };
@@ -20,6 +25,11 @@ const Home = ({ profile }: Props) => {
 export default Home;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   text: {
     fontSize: 16,
     fontWeight: "bold",

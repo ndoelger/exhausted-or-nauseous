@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { supabase } from "../../utils/supabase";
 import { Profile } from "@/app/index";
+import { router } from "expo-router";
 
 
 type Props = {
@@ -26,6 +27,7 @@ const LoginForm = ({ setProfile }: Props) => {
       });
       if (error) throw error;
       console.log(data);
+      router.push("/");
     } catch (error) {
       console.error(error);
     }
@@ -57,6 +59,7 @@ const LoginForm = ({ setProfile }: Props) => {
 
       <Pressable
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
+        onPress={handleSubmit}
       >
         <Text style={styles.buttonText}>Enter</Text>
       </Pressable>
