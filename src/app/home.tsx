@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Profile } from ".";
 import { supabase } from "../../utils/supabase";
 import { router } from "expo-router";
+import Search from "@/components/search";
 
 interface Props {
   profile: Profile;
@@ -10,6 +11,7 @@ interface Props {
 const Home = ({ profile }: Props) => {
   return (
     <View style={styles.container}>
+      <Search />
       <Text style={styles.text}>{profile.firstName}</Text>
       <Text style={styles.text}>{profile.lastName}</Text>
       <Text style={styles.text}>{profile.email}</Text>
