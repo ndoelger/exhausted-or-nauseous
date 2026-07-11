@@ -10,6 +10,7 @@ export interface Profile {
   lastName: string;
   username: string;
   emotion: "Exhausted" | "Nauseous" | null;
+  avatarUrl: string | null;
 }
 
 const Index = () => {
@@ -30,7 +31,7 @@ const Index = () => {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, email, first_name, last_name, username, emotion")
+        .select("id, email, first_name, last_name, username, emotion, avatar_url")
         .eq("id", session.user.id)
         .single();
 
@@ -44,13 +45,14 @@ const Index = () => {
         firstName: data.first_name ?? "",
         lastName: data.last_name ?? "",
         username: data.username ?? "",
-        emotion: data.emotion ?? null
+        emotion: data.emotion ?? null,
+        avatarUrl: data.avatar_url ?? null,
       });
     };
     loadSession();
   }, []);
 
-  return !profile ? <Login setProfile={setProfile} /> : <Home profile={profile} updateEmotion={updateEmotion} />;
+  return !profile ? <Login setProfile={setProfile} /> : <Home profile={profile} setProfile={setProfile} updateEmotion={updateEmotion} />;
 };
 
 export default Index;
