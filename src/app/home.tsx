@@ -5,7 +5,7 @@ import ProfileModal from "@/components/profile-modal";
 import Search from "@/components/search";
 import { font } from "@/fonts";
 import { colors, type } from "@/theme";
-import { type Profile } from "@/types/profile";
+import { EMOTION, type Profile } from "@/types/profile";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -114,7 +114,7 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
           onPress={() => updateEmotion("Exhausted")}
           style={({ pressed }) => [
             styles.yoButton,
-            profile.emotion === "Exhausted" && styles.yoButtonSelected,
+            profile.emotion === EMOTION.Exhausted && styles.yoButtonSelected,
             pressed && styles.pressed,
           ]}
         >
@@ -125,7 +125,7 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
           onPress={() => updateEmotion("Nauseous")}
           style={({ pressed }) => [
             styles.yoButton,
-            profile.emotion === "Nauseous" && styles.yoButtonSelected,
+            profile.emotion === EMOTION.Nauseous && styles.yoButtonSelected,
             pressed && styles.pressed,
           ]}
         >

@@ -28,7 +28,7 @@ const Login = () => {
         },
       ]}
     >
-      <Text style={styles.brand}>EO•N</Text>
+      <Text style={styles.brand}>E🥱O🤢N</Text>
       <Text style={styles.tagline}>EXHAUSTED OR NAUSEOUS</Text>
 
       <KeyboardAvoidingView
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     ...type.hero,
     color: colors.white,
     textAlign: "center",
-    fontSize: 72,
+    fontSize: 64,
   },
   tagline: {
     ...font.black,

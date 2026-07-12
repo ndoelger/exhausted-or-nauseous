@@ -14,18 +14,18 @@ const { execSync } = require("child_process");
 const PASSWORD = "TestPassword123!";
 
 const USERS = [
-  { firstName: "Alice", lastName: "Anderson", username: "alice", email: "alice.anderson@example.com", emotion: "Exhausted" },
-  { firstName: "Bob", lastName: "Baker", username: "bob", email: "bob.baker@example.com", emotion: "Nauseous" },
-  { firstName: "Carol", lastName: "Chen", username: "carol", email: "carol.chen@example.com", emotion: "Exhausted" },
+  { firstName: "Alice", lastName: "Anderson", username: "alice", email: "alice.anderson@example.com", emotion: "Exhausted 🥱" },
+  { firstName: "Bob", lastName: "Baker", username: "bob", email: "bob.baker@example.com", emotion: "Nauseous 🤢" },
+  { firstName: "Carol", lastName: "Chen", username: "carol", email: "carol.chen@example.com", emotion: "Exhausted 🥱" },
   { firstName: "Diego", lastName: "Diaz", username: "diego", email: "diego.diaz@example.com", emotion: null },
-  { firstName: "Elena", lastName: "Evans", username: "elena", email: "elena.evans@example.com", emotion: "Nauseous" },
-  { firstName: "Frank", lastName: "Foster", username: "frank", email: "frank.foster@example.com", emotion: "Exhausted" },
+  { firstName: "Elena", lastName: "Evans", username: "elena", email: "elena.evans@example.com", emotion: "Nauseous 🤢" },
+  { firstName: "Frank", lastName: "Foster", username: "frank", email: "frank.foster@example.com", emotion: "Exhausted 🥱" },
   { firstName: "Grace", lastName: "Garcia", username: "grace", email: "grace.garcia@example.com", emotion: null },
-  { firstName: "Hiro", lastName: "Hahn", username: "hiro", email: "hiro.hahn@example.com", emotion: "Nauseous" },
-  { firstName: "Ivy", lastName: "Ibrahim", username: "ivy", email: "ivy.ibrahim@example.com", emotion: "Exhausted" },
+  { firstName: "Hiro", lastName: "Hahn", username: "hiro", email: "hiro.hahn@example.com", emotion: "Nauseous 🤢" },
+  { firstName: "Ivy", lastName: "Ibrahim", username: "ivy", email: "ivy.ibrahim@example.com", emotion: "Exhausted 🥱" },
   { firstName: "Jules", lastName: "Jones", username: "jules", email: "jules.jones@example.com", emotion: null },
-  { firstName: "Kai", lastName: "Kim", username: "kai", email: "kai.kim@example.com", emotion: "Nauseous" },
-  { firstName: "Lena", lastName: "Lopez", username: "lena", email: "lena.lopez@example.com", emotion: "Exhausted" },
+  { firstName: "Kai", lastName: "Kim", username: "kai", email: "kai.kim@example.com", emotion: "Nauseous 🤢" },
+  { firstName: "Lena", lastName: "Lopez", username: "lena", email: "lena.lopez@example.com", emotion: "Exhausted 🥱" },
 ];
 
 function loadDevelopAdmin() {
