@@ -73,7 +73,7 @@ const UserProfileModal = ({ user, myUserId, onClose }: Props) => {
   };
 
   return (
-    <Modal transparent animationType="fade" visible onRequestClose={onClose}>
+    <Modal transparent animationType='fade' visible onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable style={styles.card} onPress={() => {}}>
           <Avatar
@@ -122,7 +122,7 @@ const UserProfileModal = ({ user, myUserId, onClose }: Props) => {
           )}
           {status === "accepted" && (
             <>
-              <Text style={styles.statusText}>PEEPS</Text>
+              <Text style={styles.statusText}>FRIENDS</Text>
               <Pressable
                 onPress={handleUnfriend}
                 disabled={loading}

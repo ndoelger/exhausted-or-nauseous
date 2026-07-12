@@ -4,7 +4,10 @@ import { type Profile } from "@/types/profile";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import {
+  ActionSheetIOS,
+  Alert,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -59,7 +62,42 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
     onClose();
   };
 
-  const handleUploadPicture = async () => {
+  const uploadAvatar = async (asset: ImagePicker.ImagePickerAsset) => {
+    if (!asset.uri) return;
+
+    // React Native: ArrayBuffer works more reliably than Blob for Storage uploads
+    const response = await fetch(asset.uri);
+    const arrayBuffer = await response.arrayBuffer();
+    const ext = asset.uri.split(".").pop()?.toLowerCase() ?? "jpg";
+    const contentType =
+      asset.mimeType ?? `image/${ext === "jpg" ? "jpeg" : ext}`;
+    const filePath = `user-${profile.id}/profile.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, arrayBuffer, {
+        contentType,
+        upsert: true,
+      });
+
+    if (uploadError) throw uploadError;
+
+    const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
+    // bust cache after overwrite
+    const avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
+
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ avatar_url: avatarUrl })
+      .eq("id", profile.id);
+
+    if (updateError) throw updateError;
+
+    setEditData((prev) => ({ ...prev, avatarUrl }));
+    setProfile({ ...profile, avatarUrl });
+  };
+
+  const handlePickFromLibrary = async () => {
     try {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -75,44 +113,59 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
       });
 
       if (result.canceled) return;
-
       const asset = result.assets[0];
-      if (!asset?.uri) return;
-
-      // React Native: ArrayBuffer works more reliably than Blob for Storage uploads
-      const response = await fetch(asset.uri);
-      const arrayBuffer = await response.arrayBuffer();
-      const ext = asset.uri.split(".").pop()?.toLowerCase() ?? "jpg";
-      const contentType =
-        asset.mimeType ?? `image/${ext === "jpg" ? "jpeg" : ext}`;
-      const filePath = `user-${profile.id}/profile.${ext}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(filePath, arrayBuffer, {
-          contentType,
-          upsert: true,
-        });
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
-      // bust cache after overwrite
-      const avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
-
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({ avatar_url: avatarUrl })
-        .eq("id", profile.id);
-
-      if (updateError) throw updateError;
-
-      setEditData((prev) => ({ ...prev, avatarUrl }));
-      setProfile({ ...profile, avatarUrl });
+      if (!asset) return;
+      await uploadAvatar(asset);
     } catch (e) {
       console.error(e);
       alert("Failed to upload picture");
     }
+  };
+
+  const handleTakePicture = async () => {
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to use the camera is required!");
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        quality: 0.7,
+      });
+
+      if (result.canceled) return;
+      const asset = result.assets[0];
+      if (!asset) return;
+      await uploadAvatar(asset);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to take picture");
+    }
+  };
+
+  const handlePicturePress = () => {
+    if (Platform.OS === "ios") {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ["Cancel", "Take Photo", "Choose from Library"],
+          cancelButtonIndex: 0,
+        },
+        (buttonIndex) => {
+          if (buttonIndex === 1) handleTakePicture();
+          if (buttonIndex === 2) handlePickFromLibrary();
+        },
+      );
+      return;
+    }
+
+    Alert.alert("Profile picture", undefined, [
+      { text: "Take Photo", onPress: handleTakePicture },
+      { text: "Choose from Library", onPress: handlePickFromLibrary },
+      { text: "Cancel", style: "cancel" },
+    ]);
   };
 
   return (
@@ -161,13 +214,14 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
             <Pressable style={styles.card} onPress={() => {}}>
               <Text style={styles.title}>EDIT</Text>
               <Text style={styles.fieldLabel}>PICTURE</Text>
-              <Pressable style={styles.upload} onPress={handleUploadPicture}>
+              <Pressable style={styles.upload} onPress={handlePicturePress}>
                 <Avatar
                   uri={editData.avatarUrl}
                   firstName={editData.firstName}
                   lastName={editData.lastName}
                   size={72}
                 />
+                <Text style={styles.pictureHint}>TAP TO CHANGE</Text>
               </Pressable>
               <Text style={styles.fieldLabel}>FIRST NAME</Text>
               <TextInput
@@ -293,5 +347,12 @@ const styles = StyleSheet.create({
   upload: {
     paddingVertical: 8,
     alignItems: "flex-start",
+    gap: 8,
+  },
+  pictureHint: {
+    fontSize: 11,
+    fontWeight: "900",
+    letterSpacing: 1,
+    color: colors.muted,
   },
 });

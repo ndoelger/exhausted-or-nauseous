@@ -50,7 +50,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow Exhausted or Nauseous to access your photos for a profile picture."
+          "photosPermission": "Allow Exhausted or Nauseous to access your photos for a profile picture.",
+          "cameraPermission": "Allow Exhausted or Nauseous to take a profile picture."
         }
       ],
       [

@@ -43,7 +43,9 @@ const Search = ({ myUserId }: Props) => {
 
     let dbQuery = supabase
       .from("profiles")
-      .select("id, username, first_name, last_name, avatar_url, emotion, email");
+      .select(
+        "id, username, first_name, last_name, avatar_url, emotion, email",
+      );
 
     if (last) {
       dbQuery = dbQuery
@@ -79,8 +81,8 @@ const Search = ({ myUserId }: Props) => {
       <Pressable onPress={() => setOpen(true)}>
         <TextInput
           editable={false}
-          pointerEvents="none"
-          placeholder="FIND PEEPS"
+          pointerEvents='none'
+          placeholder='FIND FRIENDS'
           placeholderTextColor={colors.muted}
           style={styles.bar}
           value={query}
@@ -90,7 +92,7 @@ const Search = ({ myUserId }: Props) => {
       <Modal
         transparent
         visible={open}
-        animationType="none"
+        animationType='none'
         onRequestClose={closeSearch}
       >
         <Pressable style={styles.backdrop} onPress={closeSearch}>
@@ -98,8 +100,8 @@ const Search = ({ myUserId }: Props) => {
             <TextInput
               ref={inputRef}
               autoFocus
-              autoCapitalize="none"
-              placeholder="FIND PEEPS"
+              autoCapitalize='none'
+              placeholder='FIND FRIENDS'
               placeholderTextColor={colors.muted}
               style={styles.bar}
               value={query}
@@ -117,7 +119,7 @@ const Search = ({ myUserId }: Props) => {
                 <FlatList
                   data={results}
                   keyExtractor={(item) => item.id}
-                  keyboardShouldPersistTaps="handled"
+                  keyboardShouldPersistTaps='handled'
                   renderItem={({ item }) => (
                     <Pressable
                       style={styles.result}

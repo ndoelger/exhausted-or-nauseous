@@ -53,7 +53,7 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
         <Text style={styles.brand}>EO•N</Text>
 
         <View style={styles.topRight}>
-          <Pressable
+          {/* <Pressable
             onPress={() => setShowNotificationsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
           >
@@ -65,12 +65,12 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
                 </Text>
               </View>
             )}
-          </Pressable>
+          </Pressable> */}
           <Pressable
             onPress={() => setShowFriendsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
           >
-            <Text style={styles.navLabel}>PEEPS</Text>
+            <Text style={styles.navLabel}>FRIENDS</Text>
           </Pressable>
         </View>
       </View>
@@ -105,7 +105,6 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
       </View>
 
       <View style={styles.actions}>
-        <Text style={styles.prompt}>TAP YOUR VIBE</Text>
         <Pressable
           onPress={() => updateEmotion("Exhausted")}
           style={({ pressed }) => [

@@ -81,13 +81,13 @@ const FriendsModal = ({ profileId, onClose }: Props) => {
     <>
       <Modal
         transparent
-        animationType="fade"
+        animationType='fade'
         visible={!selectedUser}
         onRequestClose={onClose}
       >
         <Pressable style={styles.backdrop} onPress={onClose}>
           <Pressable style={styles.card} onPress={() => {}}>
-            <Text style={styles.title}>PEEPS</Text>
+            <Text style={styles.title}>FRIENDS</Text>
 
             {loading ? (
               <Text style={styles.empty}>LOADING...</Text>
@@ -101,7 +101,7 @@ const FriendsModal = ({ profileId, onClose }: Props) => {
                     data={requests}
                     keyExtractor={(item) => item.requestId}
                     style={styles.list}
-                    keyboardShouldPersistTaps="handled"
+                    keyboardShouldPersistTaps='handled'
                     renderItem={({ item }) =>
                       renderPerson(
                         item,
@@ -136,7 +136,7 @@ const FriendsModal = ({ profileId, onClose }: Props) => {
                     data={friends}
                     keyExtractor={(item) => item.requestId}
                     style={styles.list}
-                    keyboardShouldPersistTaps="handled"
+                    keyboardShouldPersistTaps='handled'
                     renderItem={({ item }) => renderPerson(item)}
                   />
                 )}
