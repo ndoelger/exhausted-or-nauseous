@@ -1,3 +1,4 @@
+import { font } from "@/fonts";
 import { colors, type } from "@/theme";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
@@ -53,7 +54,7 @@ const LoginForm = () => {
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
         onPress={handleSubmit}
       >
-        <Text style={styles.buttonText}>YO</Text>
+        <Text style={styles.buttonText}>LOG IN</Text>
       </Pressable>
     </View>
   );
@@ -74,8 +75,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   input: {
+    ...font.bold,
     fontSize: 16,
-    fontWeight: "700",
     color: colors.black,
     backgroundColor: colors.white,
     borderRadius: 8,
@@ -91,8 +92,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   buttonText: {
+    ...font.black,
     fontSize: 22,
-    fontWeight: "900",
     color: colors.white,
     letterSpacing: 2,
   },

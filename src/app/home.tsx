@@ -1,9 +1,11 @@
+import FontPicker from "@/components/font-picker";
 import FriendsModal from "@/components/friends-modal";
 import NotificationsModal from "@/components/notifications-modal";
 import ProfileModal from "@/components/profile-modal";
 import Search from "@/components/search";
+import { font } from "@/fonts";
 import { colors, type } from "@/theme";
-import { type Profile } from "@/types/profile";
+import { EMOTION, type Profile } from "@/types/profile";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -43,17 +45,19 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.topBar}>
-        <Pressable
-          onPress={() => setShowProfileModal(true)}
-          style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
-        >
-          <Text style={styles.navLabel}>ME</Text>
-        </Pressable>
-
-        <Text style={styles.brand}>EO•N</Text>
-
-        <View style={styles.topRight}>
+        <View style={styles.topSide}>
           <Pressable
+            onPress={() => setShowProfileModal(true)}
+            style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
+          >
+            <Text style={styles.navLabel}>ME</Text>
+          </Pressable>
+        </View>
+
+        <Text style={styles.brand}>E🥱O🤢N</Text>
+
+        <View style={[styles.topSide, styles.topRight]}>
+          {/* <Pressable
             onPress={() => setShowNotificationsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
           >
@@ -65,12 +69,12 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
                 </Text>
               </View>
             )}
-          </Pressable>
+          </Pressable> */}
           <Pressable
             onPress={() => setShowFriendsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
           >
-            <Text style={styles.navLabel}>PEEPS</Text>
+            <Text style={styles.navLabel}>FRIENDS</Text>
           </Pressable>
         </View>
       </View>
@@ -102,15 +106,15 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
 
       <View style={styles.searchWrap}>
         <Search myUserId={profile.id} />
+        {/* <FontPicker /> */}
       </View>
 
       <View style={styles.actions}>
-        <Text style={styles.prompt}>TAP YOUR VIBE</Text>
         <Pressable
           onPress={() => updateEmotion("Exhausted")}
           style={({ pressed }) => [
             styles.yoButton,
-            profile.emotion === "Exhausted" && styles.yoButtonSelected,
+            profile.emotion === EMOTION.Exhausted && styles.yoButtonSelected,
             pressed && styles.pressed,
           ]}
         >
@@ -121,7 +125,7 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
           onPress={() => updateEmotion("Nauseous")}
           style={({ pressed }) => [
             styles.yoButton,
-            profile.emotion === "Nauseous" && styles.yoButtonSelected,
+            profile.emotion === EMOTION.Nauseous && styles.yoButtonSelected,
             pressed && styles.pressed,
           ]}
         >
@@ -143,17 +147,22 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
+  },
+  topSide: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
   brand: {
     ...type.title,
     color: colors.white,
     fontSize: 22,
+    textAlign: "center",
   },
   topRight: {
-    flexDirection: "row",
+    justifyContent: "flex-end",
     gap: 4,
   },
   navHit: {
@@ -161,8 +170,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   navLabel: {
+    ...font.black,
     color: colors.white,
-    fontWeight: "900",
     fontSize: 13,
     letterSpacing: 1,
   },
@@ -179,54 +188,60 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
   },
   badgeText: {
+    ...font.black,
     color: colors.black,
     fontSize: 9,
-    fontWeight: "900",
   },
   searchWrap: {
     width: "100%",
     paddingHorizontal: 16,
     marginTop: 8,
+    zIndex: 20,
+    overflow: "visible",
   },
   actions: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    paddingHorizontal: 24,
-    gap: 16,
+    paddingHorizontal: 20,
+    paddingBottom: 80,
+    gap: 20,
   },
   prompt: {
+    ...font.black,
     color: colors.white,
-    fontWeight: "900",
     fontSize: 12,
     letterSpacing: 3,
     marginBottom: 8,
     opacity: 0.85,
   },
   yoButton: {
-    width: "100%",
-    maxWidth: 340,
+    width: "90%",
+    maxWidth: 400,
+    minHeight: 110,
     backgroundColor: colors.white,
-    paddingVertical: 28,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingVertical: 36,
+    paddingHorizontal: 24,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "center",
     flexDirection: "row",
-    gap: 12,
+    gap: 14,
   },
   yoButtonSelected: {
     backgroundColor: colors.yellow,
   },
   yoButtonText: {
-    fontSize: 28,
-    fontWeight: "900",
+    ...font.black,
+    fontSize: 36,
     letterSpacing: 1,
     color: colors.black,
+    textAlign: "center",
   },
   yoEmoji: {
-    fontSize: 28,
+    fontSize: 36,
   },
   pressed: {
     opacity: 0.85,

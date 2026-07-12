@@ -1,16 +1,11 @@
+import AnimatedModal from "@/components/animated-modal";
 import Avatar from "@/components/avatar";
 import UserProfileModal from "@/components/user-profile-modal";
+import { font } from "@/fonts";
 import { colors, type } from "@/theme";
 import { type Profile } from "@/types/profile";
 import { useEffect, useState, type ReactElement } from "react";
-import {
-  FlatList,
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import {
   listFriends,
   respondFriendRequest,
@@ -79,15 +74,14 @@ const FriendsModal = ({ profileId, onClose }: Props) => {
 
   return (
     <>
-      <Modal
-        transparent
-        animationType="fade"
+      <AnimatedModal
         visible={!selectedUser}
-        onRequestClose={onClose}
+        onClose={onClose}
+        contentStyle={styles.card}
       >
-        <Pressable style={styles.backdrop} onPress={onClose}>
-          <Pressable style={styles.card} onPress={() => {}}>
-            <Text style={styles.title}>PEEPS</Text>
+        {(close) => (
+          <>
+            <Text style={styles.title}>FRIENDS</Text>
 
             {loading ? (
               <Text style={styles.empty}>LOADING...</Text>
@@ -143,12 +137,12 @@ const FriendsModal = ({ profileId, onClose }: Props) => {
               </>
             )}
 
-            <Pressable onPress={onClose} style={styles.close}>
+            <Pressable onPress={close} style={styles.close}>
               <Text style={styles.closeText}>DONE</Text>
             </Pressable>
-          </Pressable>
-        </Pressable>
-      </Modal>
+          </>
+        )}
+      </AnimatedModal>
 
       {selectedUser && (
         <UserProfileModal
@@ -167,13 +161,6 @@ const FriendsModal = ({ profileId, onClose }: Props) => {
 export default FriendsModal;
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(108,52,131,0.65)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
-  },
   card: {
     width: "100%",
     maxWidth: 400,
@@ -187,8 +174,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   section: {
+    ...font.black,
     fontSize: 11,
-    fontWeight: "900",
     letterSpacing: 2,
     color: colors.muted,
     marginTop: 12,
@@ -211,13 +198,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
+    ...font.black,
     fontSize: 16,
-    fontWeight: "800",
     color: colors.black,
   },
   meta: {
+    ...font.medium,
     fontSize: 13,
-    fontWeight: "600",
     color: colors.muted,
     marginTop: 2,
   },
@@ -232,8 +219,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   acceptText: {
+    ...font.black,
     color: colors.white,
-    fontWeight: "900",
     fontSize: 12,
     letterSpacing: 1,
   },
@@ -244,14 +231,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   rejectText: {
+    ...font.black,
     color: colors.muted,
-    fontWeight: "900",
     fontSize: 12,
     letterSpacing: 1,
   },
   empty: {
+    ...font.black,
     color: colors.muted,
-    fontWeight: "800",
     fontSize: 12,
     letterSpacing: 1,
     paddingVertical: 8,
@@ -262,8 +249,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   closeText: {
+    ...font.black,
     fontSize: 13,
-    fontWeight: "900",
     letterSpacing: 1,
     color: colors.muted,
   },

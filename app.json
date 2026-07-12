@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#9B59B6",
+        "backgroundColor": "#1B2A4A",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -40,7 +40,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#9B59B6",
+          "backgroundColor": "#1B2A4A",
           "android": {
             "image": "./assets/images/splash-icon.png",
             "imageWidth": 76
@@ -50,14 +50,15 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow Exhausted or Nauseous to access your photos for a profile picture."
+          "photosPermission": "Allow Exhausted or Nauseous to access your photos for a profile picture.",
+          "cameraPermission": "Allow Exhausted or Nauseous to take a profile picture."
         }
       ],
       [
         "expo-notifications",
         {
           "icon": "./assets/images/icon.png",
-          "color": "#9B59B6",
+          "color": "#1B2A4A",
           "sounds": []
         }
       ]

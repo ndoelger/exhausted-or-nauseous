@@ -1,8 +1,12 @@
--- store Expo push tokens on profiles
-alter table public.profiles
-  add column if not exists expo_push_token text;
+-- store emoji on profiles.emotion; notification body uses the column as-is
+update public.profiles
+set emotion = 'Exhausted 🥱'
+where emotion = 'Exhausted';
 
--- store a full message in notification body ("Nic is Exhausted")
+update public.profiles
+set emotion = 'Nauseous 🤢'
+where emotion = 'Nauseous';
+
 create or replace function public.notify_friends_on_emotion()
 returns trigger
 language plpgsql
@@ -19,12 +23,7 @@ begin
       end,
       new.id,
       'emotion',
-      coalesce(new.first_name, 'Someone') || ' is ' || new.emotion ||
-        case new.emotion
-          when 'Exhausted' then ' 🥱'
-          when 'Nauseous' then ' 🤢'
-          else ''
-        end
+      coalesce(new.first_name, 'Someone') || ' is ' || new.emotion
     from public.friend_requests fr
     where fr.status = 'accepted'
       and (fr.from_user = new.id or fr.to_user = new.id);

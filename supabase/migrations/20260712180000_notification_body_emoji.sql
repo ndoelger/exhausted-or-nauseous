@@ -1,8 +1,4 @@
--- store Expo push tokens on profiles
-alter table public.profiles
-  add column if not exists expo_push_token text;
-
--- store a full message in notification body ("Nic is Exhausted")
+-- notification body includes emotion emoji
 create or replace function public.notify_friends_on_emotion()
 returns trigger
 language plpgsql

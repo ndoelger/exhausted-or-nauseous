@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { mapProfile, type Profile } from "@/types/profile";
+import { EMOTION, mapProfile, type Profile } from "@/types/profile";
 import { registerPushToken } from "../../utils/register-push";
 import { supabase } from "../../utils/supabase";
 import Home from "./home";
@@ -57,8 +57,9 @@ const Index = () => {
 
   const updateEmotion = async (emotion: "Exhausted" | "Nauseous") => {
     if (!profile) return;
-    setProfile({ ...profile, emotion });
-    await supabase.from("profiles").update({ emotion }).eq("id", profile.id);
+    const next = EMOTION[emotion];
+    setProfile({ ...profile, emotion: next });
+    await supabase.from("profiles").update({ emotion: next }).eq("id", profile.id);
   };
 
   if (!ready) return null;

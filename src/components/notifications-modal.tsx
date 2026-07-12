@@ -1,14 +1,9 @@
+import AnimatedModal from "@/components/animated-modal";
 import Avatar from "@/components/avatar";
+import { font } from "@/fonts";
 import { colors, type } from "@/theme";
 import { useEffect, useState } from "react";
-import {
-  FlatList,
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { supabase } from "../../utils/supabase";
 
 type NotificationRow = {
@@ -81,9 +76,9 @@ const NotificationsModal = ({ profileId, onClose }: Props) => {
   }, [profileId]);
 
   return (
-    <Modal transparent animationType="fade" visible onRequestClose={onClose}>
-      <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={styles.card} onPress={() => {}}>
+    <AnimatedModal onClose={onClose} contentStyle={styles.card}>
+      {(close) => (
+        <>
           <Text style={styles.title}>YO</Text>
 
           {loading ? (
@@ -114,25 +109,18 @@ const NotificationsModal = ({ profileId, onClose }: Props) => {
             />
           )}
 
-          <Pressable onPress={onClose} style={styles.close}>
+          <Pressable onPress={close} style={styles.close}>
             <Text style={styles.closeText}>DONE</Text>
           </Pressable>
-        </Pressable>
-      </Pressable>
-    </Modal>
+        </>
+      )}
+    </AnimatedModal>
   );
 };
 
 export default NotificationsModal;
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(108,52,131,0.65)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
-  },
   card: {
     width: "100%",
     maxWidth: 400,
@@ -165,19 +153,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   message: {
+    ...font.black,
     fontSize: 15,
-    fontWeight: "800",
     color: colors.black,
   },
   meta: {
+    ...font.medium,
     fontSize: 13,
-    fontWeight: "600",
     color: colors.muted,
     marginTop: 2,
   },
   empty: {
+    ...font.black,
     color: colors.muted,
-    fontWeight: "800",
     fontSize: 12,
     letterSpacing: 1,
     paddingVertical: 16,
@@ -188,8 +176,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   closeText: {
+    ...font.black,
     fontSize: 13,
-    fontWeight: "900",
     letterSpacing: 1,
     color: colors.muted,
   },

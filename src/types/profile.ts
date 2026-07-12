@@ -1,4 +1,9 @@
-export type Emotion = "Exhausted" | "Nauseous" | null;
+export type Emotion = "Exhausted 🥱" | "Nauseous 🤢" | null;
+
+export const EMOTION = {
+  Exhausted: "Exhausted 🥱",
+  Nauseous: "Nauseous 🤢",
+} as const;
 
 /** App profile shape (camelCase). Use mapProfile() at the Supabase boundary. */
 export type Profile = {
@@ -22,6 +27,13 @@ export type ProfileRow = {
   avatar_url?: string | null;
 };
 
+function mapEmotion(value?: string | null): Emotion {
+  if (!value) return null;
+  if (value.startsWith("Exhausted")) return EMOTION.Exhausted;
+  if (value.startsWith("Nauseous")) return EMOTION.Nauseous;
+  return null;
+}
+
 export function mapProfile(row: ProfileRow): Profile {
   return {
     id: row.id,
@@ -29,7 +41,7 @@ export function mapProfile(row: ProfileRow): Profile {
     firstName: row.first_name ?? "",
     lastName: row.last_name ?? "",
     username: row.username ?? "",
-    emotion: (row.emotion as Emotion) ?? null,
+    emotion: mapEmotion(row.emotion),
     avatarUrl: row.avatar_url ?? null,
   };
 }

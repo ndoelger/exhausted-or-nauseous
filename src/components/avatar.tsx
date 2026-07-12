@@ -1,3 +1,4 @@
+import { font } from "@/fonts";
 import { colors } from "@/theme";
 import { Image, StyleSheet, Text, View } from "react-native";
 
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   initials: {
+    ...font.black,
     color: colors.white,
-    fontWeight: "900",
   },
 });

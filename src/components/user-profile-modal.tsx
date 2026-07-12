@@ -1,8 +1,10 @@
+import AnimatedModal from "@/components/animated-modal";
 import Avatar from "@/components/avatar";
+import { font } from "@/fonts";
 import { colors } from "@/theme";
 import { type Profile } from "@/types/profile";
 import { useEffect, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import {
   FriendStatus,
   getFriendship,
@@ -73,9 +75,9 @@ const UserProfileModal = ({ user, myUserId, onClose }: Props) => {
   };
 
   return (
-    <Modal transparent animationType="fade" visible onRequestClose={onClose}>
-      <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={styles.card} onPress={() => {}}>
+    <AnimatedModal onClose={onClose} contentStyle={styles.card}>
+      {(close) => (
+        <>
           <Avatar
             uri={user.avatarUrl}
             firstName={user.firstName}
@@ -122,7 +124,7 @@ const UserProfileModal = ({ user, myUserId, onClose }: Props) => {
           )}
           {status === "accepted" && (
             <>
-              <Text style={styles.statusText}>PEEPS</Text>
+              <Text style={styles.statusText}>FRIENDS</Text>
               <Pressable
                 onPress={handleUnfriend}
                 disabled={loading}
@@ -136,25 +138,18 @@ const UserProfileModal = ({ user, myUserId, onClose }: Props) => {
             <Text style={styles.statusText}>DECLINED</Text>
           )}
 
-          <Pressable onPress={onClose} style={styles.close}>
+          <Pressable onPress={close} style={styles.close}>
             <Text style={styles.closeText}>DONE</Text>
           </Pressable>
-        </Pressable>
-      </Pressable>
-    </Modal>
+        </>
+      )}
+    </AnimatedModal>
   );
 };
 
 export default UserProfileModal;
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(108,52,131,0.65)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
-  },
   card: {
     width: "100%",
     maxWidth: 360,
@@ -164,20 +159,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   name: {
+    ...font.black,
     fontSize: 22,
-    fontWeight: "900",
     color: colors.black,
     marginTop: 12,
   },
   meta: {
+    ...font.bold,
     fontSize: 14,
-    fontWeight: "700",
     color: colors.muted,
     marginTop: 4,
   },
   emotion: {
+    ...font.black,
     fontSize: 13,
-    fontWeight: "900",
     letterSpacing: 1,
     color: colors.purple,
     marginTop: 10,
@@ -191,8 +186,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   primaryText: {
+    ...font.black,
     fontSize: 14,
-    fontWeight: "900",
     color: colors.white,
     letterSpacing: 1,
   },
@@ -205,8 +200,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   secondaryText: {
+    ...font.black,
     fontSize: 14,
-    fontWeight: "900",
     color: colors.muted,
     letterSpacing: 1,
   },
@@ -215,9 +210,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   statusText: {
+    ...font.black,
     marginTop: 20,
     fontSize: 13,
-    fontWeight: "900",
     letterSpacing: 2,
     color: colors.muted,
   },
@@ -228,8 +223,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   unfriendText: {
+    ...font.black,
     fontSize: 13,
-    fontWeight: "900",
     letterSpacing: 1,
     color: colors.danger,
   },
@@ -239,8 +234,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   closeText: {
+    ...font.black,
     fontSize: 13,
-    fontWeight: "900",
     letterSpacing: 1,
     color: colors.muted,
   },
