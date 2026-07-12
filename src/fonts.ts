@@ -1,6 +1,3 @@
-import React from "react";
-import { StyleSheet, Text, TextInput } from "react-native";
-
 export type FontWeights = {
   regular: string;
   medium: string;
@@ -13,17 +10,6 @@ export type FontOption = {
   label: string;
   weights: FontWeights;
 };
-
-/** Active UI font pack — switched by the DEV font picker */
-let activeWeights: FontWeights = {
-  regular: "Roboto_400Regular",
-  medium: "Roboto_500Medium",
-  bold: "Roboto_700Bold",
-  black: "Roboto_900Black",
-};
-
-let activeFontId = "roboto";
-const listeners = new Set<() => void>();
 
 export const FONT_OPTIONS: FontOption[] = [
   {
@@ -86,111 +72,120 @@ export const FONT_OPTIONS: FontOption[] = [
       black: "BebasNeue_400Regular",
     },
   },
+  {
+    id: "poppins",
+    label: "Poppins",
+    weights: {
+      regular: "Poppins_400Regular",
+      medium: "Poppins_500Medium",
+      bold: "Poppins_700Bold",
+      black: "Poppins_700Bold",
+    },
+  },
+  {
+    id: "montserrat",
+    label: "Montserrat",
+    weights: {
+      regular: "Montserrat_400Regular",
+      medium: "Montserrat_500Medium",
+      bold: "Montserrat_700Bold",
+      black: "Montserrat_900Black",
+    },
+  },
+  {
+    id: "nunito",
+    label: "Nunito",
+    weights: {
+      regular: "Nunito_400Regular",
+      medium: "Nunito_500Medium",
+      bold: "Nunito_700Bold",
+      black: "Nunito_900Black",
+    },
+  },
+  {
+    id: "raleway",
+    label: "Raleway",
+    weights: {
+      regular: "Raleway_400Regular",
+      medium: "Raleway_500Medium",
+      bold: "Raleway_700Bold",
+      black: "Raleway_900Black",
+    },
+  },
+  {
+    id: "work-sans",
+    label: "Work Sans",
+    weights: {
+      regular: "WorkSans_400Regular",
+      medium: "WorkSans_500Medium",
+      bold: "WorkSans_700Bold",
+      black: "WorkSans_900Black",
+    },
+  },
+  {
+    id: "dm-sans",
+    label: "DM Sans",
+    weights: {
+      regular: "DMSans_400Regular",
+      medium: "DMSans_500Medium",
+      bold: "DMSans_700Bold",
+      black: "DMSans_900Black",
+    },
+  },
+  {
+    id: "outfit",
+    label: "Outfit",
+    weights: {
+      regular: "Outfit_400Regular",
+      medium: "Outfit_500Medium",
+      bold: "Outfit_700Bold",
+      black: "Outfit_900Black",
+    },
+  },
+  {
+    id: "manrope",
+    label: "Manrope",
+    weights: {
+      regular: "Manrope_400Regular",
+      medium: "Manrope_500Medium",
+      bold: "Manrope_700Bold",
+      black: "Manrope_700Bold",
+    },
+  },
+  {
+    id: "lexend",
+    label: "Lexend",
+    weights: {
+      regular: "Lexend_400Regular",
+      medium: "Lexend_500Medium",
+      bold: "Lexend_700Bold",
+      black: "Lexend_900Black",
+    },
+  },
+  {
+    id: "fredoka",
+    label: "Fredoka",
+    weights: {
+      regular: "Fredoka_400Regular",
+      medium: "Fredoka_500Medium",
+      bold: "Fredoka_700Bold",
+      black: "Fredoka_700Bold",
+    },
+  },
 ];
 
-/** Theme helpers — mirror active pack */
-export const roboto = {
-  get regular() {
-    return activeWeights.regular;
-  },
-  get medium() {
-    return activeWeights.medium;
-  },
-  get bold() {
-    return activeWeights.bold;
-  },
-  get black() {
-    return activeWeights.black;
-  },
+/** App default font pack */
+export const fonts =
+  FONT_OPTIONS.find((f) => f.id === "dm-sans")?.weights ??
+  FONT_OPTIONS[0].weights;
+
+/** Spread into text styles: `{ ...font.black, fontSize: 16 }` */
+export const font = {
+  regular: { fontFamily: fonts.regular, fontWeight: "normal" as const },
+  medium: { fontFamily: fonts.medium, fontWeight: "normal" as const },
+  bold: { fontFamily: fonts.bold, fontWeight: "normal" as const },
+  black: { fontFamily: fonts.black, fontWeight: "normal" as const },
 };
 
-export function getActiveFontId() {
-  return activeFontId;
-}
-
-export function setActiveFont(id: string) {
-  const option = FONT_OPTIONS.find((f) => f.id === id);
-  if (!option) return;
-  activeFontId = option.id;
-  activeWeights = option.weights;
-  listeners.forEach((l) => l());
-}
-
-export function subscribeFontChange(listener: () => void) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-function weightToFamily(weight: string): string {
-  switch (weight) {
-    case "100":
-    case "200":
-    case "300":
-    case "400":
-    case "normal":
-      return activeWeights.regular;
-    case "500":
-    case "600":
-      return activeWeights.medium;
-    case "700":
-    case "bold":
-      return activeWeights.bold;
-    case "800":
-    case "900":
-      return activeWeights.black;
-    default:
-      return activeWeights.regular;
-  }
-}
-
-function fontFamilyForStyle(style: unknown): string {
-  const flat = StyleSheet.flatten(style as object) ?? {};
-  // Ignore previously applied pack families so switching works
-  const known = new Set(
-    FONT_OPTIONS.flatMap((o) => Object.values(o.weights)),
-  );
-  if (
-    typeof flat.fontFamily === "string" &&
-    flat.fontFamily.length > 0 &&
-    !known.has(flat.fontFamily)
-  ) {
-    return flat.fontFamily;
-  }
-  const weight = flat.fontWeight != null ? String(flat.fontWeight) : "400";
-  return weightToFamily(weight);
-}
-
-let patched = false;
-
-function patchTextComponent(Component: typeof Text | typeof TextInput) {
-  const Comp = Component as typeof Text & {
-    render?: (...args: unknown[]) => React.ReactElement;
-  };
-  const originalRender = Comp.render;
-  if (!originalRender) return;
-
-  const patchedRender = function (this: unknown, ...args: unknown[]) {
-    const element = originalRender.apply(this, args) as React.ReactElement<{
-      style?: unknown;
-    }>;
-    return React.cloneElement(element, {
-      style: [
-        { fontFamily: fontFamilyForStyle(element.props.style) },
-        element.props.style,
-        { fontWeight: "normal" as const },
-      ],
-    });
-  };
-  Comp.render = patchedRender;
-}
-
-/** Call once after fonts are loaded. */
-export function applyFontDefaults() {
-  if (patched) return;
-  patched = true;
-  patchTextComponent(Text);
-  patchTextComponent(TextInput);
-}
-
-/** @deprecated use applyFontDefaults */
-export const applyRobotoDefaults = applyFontDefaults;
+/** @deprecated alias */
+export const roboto = fonts;

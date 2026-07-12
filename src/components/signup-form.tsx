@@ -1,3 +1,4 @@
+import { font } from "@/fonts";
 import { colors, type } from "@/theme";
 import { devSignup } from "@/dev/fixtures/auth";
 import { useState } from "react";
@@ -134,14 +135,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   devFill: {
+    ...font.black,
     color: colors.yellow,
-    fontWeight: "900",
     fontSize: 11,
     letterSpacing: 1,
   },
   input: {
+    ...font.bold,
     fontSize: 16,
-    fontWeight: "700",
     color: colors.black,
     backgroundColor: colors.white,
     borderRadius: 8,
@@ -157,8 +158,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   buttonText: {
+    ...font.black,
     fontSize: 22,
-    fontWeight: "900",
     color: colors.white,
     letterSpacing: 2,
   },

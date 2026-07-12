@@ -1,3 +1,4 @@
+import { font } from "@/fonts";
 import LoginForm from "@/components/login-form";
 import SignupForm from "@/components/signup-form";
 import { colors, type } from "@/theme";
@@ -62,9 +63,9 @@ const styles = StyleSheet.create({
     fontSize: 72,
   },
   tagline: {
+    ...font.black,
     color: colors.white,
     textAlign: "center",
-    fontWeight: "900",
     fontSize: 12,
     letterSpacing: 3,
     marginBottom: 40,
@@ -79,8 +80,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   switchText: {
+    ...font.black,
     color: colors.white,
-    fontWeight: "900",
     fontSize: 12,
     letterSpacing: 1,
   },

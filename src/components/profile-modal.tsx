@@ -1,4 +1,6 @@
+import AnimatedModal from "@/components/animated-modal";
 import Avatar from "@/components/avatar";
+import { font } from "@/fonts";
 import { colors, type } from "@/theme";
 import { type Profile } from "@/types/profile";
 import * as ImagePicker from "expo-image-picker";
@@ -6,7 +8,6 @@ import { useState } from "react";
 import {
   ActionSheetIOS,
   Alert,
-  Modal,
   Platform,
   Pressable,
   StyleSheet,
@@ -58,8 +59,6 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
       lastName: editData.lastName,
       avatarUrl: editData.avatarUrl,
     });
-
-    onClose();
   };
 
   const uploadAvatar = async (asset: ImagePicker.ImagePickerAsset) => {
@@ -169,97 +168,90 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
   };
 
   return (
-    <Modal transparent animationType='fade' visible onRequestClose={onClose}>
-      <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={styles.card} onPress={() => {}}>
-          <Text style={styles.title}>ME</Text>
-          <Avatar
-            uri={editData.avatarUrl}
-            firstName={editData.firstName}
-            lastName={editData.lastName}
-            size={72}
-          />
-          <Text style={styles.label}>
-            {profile.firstName} {profile.lastName}
-          </Text>
-          <Text style={styles.meta}>@{profile.username}</Text>
-          {profile.emotion && (
-            <Text style={styles.emotion}>{profile.emotion.toUpperCase()}</Text>
-          )}
-
-          <Pressable
-            onPress={() => setShowEditModal(true)}
-            style={styles.secondary}
-          >
-            <Text style={styles.secondaryText}>EDIT</Text>
-          </Pressable>
-
-          <Pressable onPress={handleSignOut} style={styles.signOut}>
-            <Text style={styles.signOutText}>SIGN OUT</Text>
-          </Pressable>
-        </Pressable>
-      </Pressable>
-
-      {showEditModal && (
-        <Modal
-          transparent
-          animationType="fade"
-          visible
-          onRequestClose={() => setShowEditModal(false)}
-        >
-          <Pressable
-            style={styles.backdrop}
-            onPress={() => setShowEditModal(false)}
-          >
-            <Pressable style={styles.card} onPress={() => {}}>
-              <Text style={styles.title}>EDIT</Text>
-              <Text style={styles.fieldLabel}>PICTURE</Text>
-              <Pressable style={styles.upload} onPress={handlePicturePress}>
-                <Avatar
-                  uri={editData.avatarUrl}
-                  firstName={editData.firstName}
-                  lastName={editData.lastName}
-                  size={72}
-                />
-                <Text style={styles.pictureHint}>TAP TO CHANGE</Text>
-              </Pressable>
-              <Text style={styles.fieldLabel}>FIRST NAME</Text>
-              <TextInput
-                style={styles.input}
-                value={editData.firstName}
-                onChangeText={(text) =>
-                  setEditData({ ...editData, firstName: text })
-                }
+    <AnimatedModal onClose={onClose} contentStyle={styles.card}>
+      {() =>
+        showEditModal ? (
+          <>
+            <Text style={styles.title}>EDIT</Text>
+            <Text style={styles.fieldLabel}>PICTURE</Text>
+            <Pressable style={styles.upload} onPress={handlePicturePress}>
+              <Avatar
+                uri={editData.avatarUrl}
+                firstName={editData.firstName}
+                lastName={editData.lastName}
+                size={72}
               />
-              <Text style={styles.fieldLabel}>LAST NAME</Text>
-              <TextInput
-                style={styles.input}
-                value={editData.lastName}
-                onChangeText={(text) =>
-                  setEditData({ ...editData, lastName: text })
-                }
-              />
-              <Pressable onPress={handleEdit} style={styles.primary}>
-                <Text style={styles.primaryText}>SAVE</Text>
-              </Pressable>
+              <Text style={styles.pictureHint}>TAP TO CHANGE</Text>
             </Pressable>
-          </Pressable>
-        </Modal>
-      )}
-    </Modal>
+            <Text style={styles.fieldLabel}>FIRST NAME</Text>
+            <TextInput
+              style={styles.input}
+              value={editData.firstName}
+              onChangeText={(text) =>
+                setEditData({ ...editData, firstName: text })
+              }
+            />
+            <Text style={styles.fieldLabel}>LAST NAME</Text>
+            <TextInput
+              style={styles.input}
+              value={editData.lastName}
+              onChangeText={(text) =>
+                setEditData({ ...editData, lastName: text })
+              }
+            />
+            <Pressable
+              onPress={async () => {
+                await handleEdit();
+                setShowEditModal(false);
+              }}
+              style={styles.primary}
+            >
+              <Text style={styles.primaryText}>SAVE</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setShowEditModal(false)}
+              style={styles.signOut}
+            >
+              <Text style={styles.secondaryText}>BACK</Text>
+            </Pressable>
+          </>
+        ) : (
+          <>
+            <Text style={styles.title}>ME</Text>
+            <Avatar
+              uri={editData.avatarUrl}
+              firstName={editData.firstName}
+              lastName={editData.lastName}
+              size={72}
+            />
+            <Text style={styles.label}>
+              {profile.firstName} {profile.lastName}
+            </Text>
+            <Text style={styles.meta}>@{profile.username}</Text>
+            {profile.emotion && (
+              <Text style={styles.emotion}>{profile.emotion.toUpperCase()}</Text>
+            )}
+
+            <Pressable
+              onPress={() => setShowEditModal(true)}
+              style={styles.secondary}
+            >
+              <Text style={styles.secondaryText}>EDIT</Text>
+            </Pressable>
+
+            <Pressable onPress={handleSignOut} style={styles.signOut}>
+              <Text style={styles.signOutText}>SIGN OUT</Text>
+            </Pressable>
+          </>
+        )
+      }
+    </AnimatedModal>
   );
 };
 
 export default ProfileModal;
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(108,52,131,0.65)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
-  },
   card: {
     width: "100%",
     maxWidth: 360,
@@ -272,28 +264,28 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   label: {
+    ...font.black,
     fontSize: 20,
-    fontWeight: "900",
     color: colors.black,
     marginTop: 12,
   },
   fieldLabel: {
+    ...font.black,
     fontSize: 11,
-    fontWeight: "900",
     letterSpacing: 1,
     color: colors.muted,
     marginTop: 12,
     marginBottom: 6,
   },
   meta: {
+    ...font.bold,
     fontSize: 14,
-    fontWeight: "700",
     color: colors.muted,
     marginTop: 4,
   },
   emotion: {
+    ...font.black,
     fontSize: 14,
-    fontWeight: "900",
     letterSpacing: 1,
     color: colors.purple,
     marginTop: 10,
@@ -306,8 +298,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   primaryText: {
+    ...font.black,
     fontSize: 16,
-    fontWeight: "900",
     color: colors.white,
     letterSpacing: 1,
   },
@@ -319,8 +311,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   secondaryText: {
+    ...font.black,
     fontSize: 14,
-    fontWeight: "900",
     color: colors.black,
     letterSpacing: 1,
   },
@@ -330,14 +322,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   signOutText: {
+    ...font.black,
     fontSize: 13,
-    fontWeight: "900",
     letterSpacing: 1,
     color: colors.danger,
   },
   input: {
+    ...font.bold,
     fontSize: 16,
-    fontWeight: "700",
     color: colors.black,
     backgroundColor: colors.cream,
     borderRadius: 8,
@@ -350,8 +342,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   pictureHint: {
+    ...font.black,
     fontSize: 11,
-    fontWeight: "900",
     letterSpacing: 1,
     color: colors.muted,
   },

@@ -1,7 +1,9 @@
+import FontPicker from "@/components/font-picker";
 import FriendsModal from "@/components/friends-modal";
 import NotificationsModal from "@/components/notifications-modal";
 import ProfileModal from "@/components/profile-modal";
 import Search from "@/components/search";
+import { font } from "@/fonts";
 import { colors, type } from "@/theme";
 import { type Profile } from "@/types/profile";
 import { useEffect, useState } from "react";
@@ -43,16 +45,18 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.topBar}>
-        <Pressable
-          onPress={() => setShowProfileModal(true)}
-          style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
-        >
-          <Text style={styles.navLabel}>ME</Text>
-        </Pressable>
+        <View style={styles.topSide}>
+          <Pressable
+            onPress={() => setShowProfileModal(true)}
+            style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
+          >
+            <Text style={styles.navLabel}>ME</Text>
+          </Pressable>
+        </View>
 
-        <Text style={styles.brand}>EO•N</Text>
+        <Text style={styles.brand}>E🥱O🤢N</Text>
 
-        <View style={styles.topRight}>
+        <View style={[styles.topSide, styles.topRight]}>
           {/* <Pressable
             onPress={() => setShowNotificationsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
@@ -102,6 +106,7 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
 
       <View style={styles.searchWrap}>
         <Search myUserId={profile.id} />
+        <FontPicker />
       </View>
 
       <View style={styles.actions}>
@@ -142,17 +147,22 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
+  },
+  topSide: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
   brand: {
     ...type.title,
     color: colors.white,
     fontSize: 22,
+    textAlign: "center",
   },
   topRight: {
-    flexDirection: "row",
+    justifyContent: "flex-end",
     gap: 4,
   },
   navHit: {
@@ -160,8 +170,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   navLabel: {
+    ...font.black,
     color: colors.white,
-    fontWeight: "900",
     fontSize: 13,
     letterSpacing: 1,
   },
@@ -178,14 +188,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
   },
   badgeText: {
+    ...font.black,
     color: colors.black,
     fontSize: 9,
-    fontWeight: "900",
   },
   searchWrap: {
     width: "100%",
     paddingHorizontal: 16,
     marginTop: 8,
+    zIndex: 20,
+    overflow: "visible",
   },
   actions: {
     flex: 1,
@@ -196,8 +208,8 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   prompt: {
+    ...font.black,
     color: colors.white,
-    fontWeight: "900",
     fontSize: 12,
     letterSpacing: 3,
     marginBottom: 8,
@@ -219,8 +231,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.yellow,
   },
   yoButtonText: {
+    ...font.black,
     fontSize: 28,
-    fontWeight: "900",
     letterSpacing: 1,
     color: colors.black,
   },
