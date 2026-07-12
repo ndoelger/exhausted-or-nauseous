@@ -1,9 +1,9 @@
-import { Profile } from "@/app/index";
+import Avatar from "@/components/avatar";
+import { colors, type } from "@/theme";
+import { type Profile } from "@/types/profile";
 import * as ImagePicker from "expo-image-picker";
-import { router } from "expo-router";
 import { useState } from "react";
 import {
-  Image,
   Modal,
   Pressable,
   StyleSheet,
@@ -28,14 +28,10 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
     avatarUrl: profile.avatarUrl,
   });
 
-  const initials =
-    (editData.firstName?.[0] ?? "").toUpperCase() +
-    (editData.lastName?.[0] ?? "").toUpperCase();
-
   const handleSignOut = async () => {
+    // index onAuthStateChange clears profile and shows Login
     await supabase.auth.signOut();
     onClose();
-    router.push("/login");
   };
 
   const handleEdit = async () => {
@@ -123,31 +119,30 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
     <Modal transparent animationType='fade' visible onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable style={styles.card} onPress={() => {}}>
-          <Text style={styles.title}>Profile</Text>
-          {editData.avatarUrl ? (
-            <Image source={{ uri: editData.avatarUrl }} style={styles.avatar} />
-          ) : (
-            <View style={styles.avatarPlaceholder}>
-              <Text style={styles.avatarInitials}>{initials}</Text>
-            </View>
-          )}
+          <Text style={styles.title}>ME</Text>
+          <Avatar
+            uri={editData.avatarUrl}
+            firstName={editData.firstName}
+            lastName={editData.lastName}
+            size={72}
+          />
           <Text style={styles.label}>
             {profile.firstName} {profile.lastName}
           </Text>
           <Text style={styles.meta}>@{profile.username}</Text>
           {profile.emotion && (
-            <Text style={styles.emotion}>{profile.emotion}</Text>
+            <Text style={styles.emotion}>{profile.emotion.toUpperCase()}</Text>
           )}
 
           <Pressable
             onPress={() => setShowEditModal(true)}
-            style={styles.close}
+            style={styles.secondary}
           >
-            <Text style={styles.closeText}>Edit</Text>
+            <Text style={styles.secondaryText}>EDIT</Text>
           </Pressable>
 
           <Pressable onPress={handleSignOut} style={styles.signOut}>
-            <Text style={styles.signOutText}>Sign Out</Text>
+            <Text style={styles.signOutText}>SIGN OUT</Text>
           </Pressable>
         </Pressable>
       </Pressable>
@@ -155,7 +150,7 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
       {showEditModal && (
         <Modal
           transparent
-          animationType='fade'
+          animationType="fade"
           visible
           onRequestClose={() => setShowEditModal(false)}
         >
@@ -164,21 +159,17 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
             onPress={() => setShowEditModal(false)}
           >
             <Pressable style={styles.card} onPress={() => {}}>
-              <Text style={styles.title}>Edit Profile</Text>
-              <Text style={styles.label}>Profile Picture</Text>
+              <Text style={styles.title}>EDIT</Text>
+              <Text style={styles.fieldLabel}>PICTURE</Text>
               <Pressable style={styles.upload} onPress={handleUploadPicture}>
-                {editData.avatarUrl ? (
-                  <Image
-                    source={{ uri: editData.avatarUrl }}
-                    style={styles.avatar}
-                  />
-                ) : (
-                  <View style={styles.avatarPlaceholder}>
-                    <Text style={styles.avatarInitials}>{initials}</Text>
-                  </View>
-                )}
+                <Avatar
+                  uri={editData.avatarUrl}
+                  firstName={editData.firstName}
+                  lastName={editData.lastName}
+                  size={72}
+                />
               </Pressable>
-              <Text style={styles.label}>First Name</Text>
+              <Text style={styles.fieldLabel}>FIRST NAME</Text>
               <TextInput
                 style={styles.input}
                 value={editData.firstName}
@@ -186,7 +177,7 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
                   setEditData({ ...editData, firstName: text })
                 }
               />
-              <Text style={styles.label}>Last Name</Text>
+              <Text style={styles.fieldLabel}>LAST NAME</Text>
               <TextInput
                 style={styles.input}
                 value={editData.lastName}
@@ -194,8 +185,8 @@ const ProfileModal = ({ profile, onClose, setProfile }: Props) => {
                   setEditData({ ...editData, lastName: text })
                 }
               />
-              <Pressable onPress={handleEdit} style={styles.save}>
-                <Text style={styles.saveText}>Save</Text>
+              <Pressable onPress={handleEdit} style={styles.primary}>
+                <Text style={styles.primaryText}>SAVE</Text>
               </Pressable>
             </Pressable>
           </Pressable>
@@ -210,7 +201,7 @@ export default ProfileModal;
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(108,52,131,0.65)",
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
@@ -218,97 +209,89 @@ const styles = StyleSheet.create({
   card: {
     width: "100%",
     maxWidth: 360,
-    backgroundColor: "#fff",
-    borderRadius: 16,
+    backgroundColor: colors.white,
+    borderRadius: 8,
     padding: 24,
   },
   title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#000",
-    marginBottom: 8,
+    ...type.title,
+    marginBottom: 12,
   },
   label: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000",
+    fontSize: 20,
+    fontWeight: "900",
+    color: colors.black,
+    marginTop: 12,
+  },
+  fieldLabel: {
+    fontSize: 11,
+    fontWeight: "900",
+    letterSpacing: 1,
+    color: colors.muted,
+    marginTop: 12,
+    marginBottom: 6,
   },
   meta: {
     fontSize: 14,
-    color: "#666",
+    fontWeight: "700",
+    color: colors.muted,
     marginTop: 4,
   },
   emotion: {
+    fontSize: 14,
+    fontWeight: "900",
+    letterSpacing: 1,
+    color: colors.purple,
+    marginTop: 10,
+  },
+  primary: {
+    marginTop: 20,
+    backgroundColor: colors.black,
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  primaryText: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
-    marginTop: 8,
+    fontWeight: "900",
+    color: colors.white,
+    letterSpacing: 1,
+  },
+  secondary: {
+    marginTop: 20,
+    backgroundColor: colors.cream,
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  secondaryText: {
+    fontSize: 14,
+    fontWeight: "900",
+    color: colors.black,
+    letterSpacing: 1,
   },
   signOut: {
-    marginTop: 20,
-    backgroundColor: "#eee",
-    borderRadius: 12,
-    paddingVertical: 14,
+    marginTop: 10,
+    paddingVertical: 12,
     alignItems: "center",
   },
   signOutText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#c00",
-  },
-  close: {
-    marginTop: 8,
-    paddingVertical: 12,
-    alignItems: "center",
-  },
-  closeText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#666",
+    fontSize: 13,
+    fontWeight: "900",
+    letterSpacing: 1,
+    color: colors.danger,
   },
   input: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
-    borderWidth: 1,
-    borderColor: "#ccc",
+    fontWeight: "700",
+    color: colors.black,
+    backgroundColor: colors.cream,
     borderRadius: 8,
-    padding: 8,
-  },
-  save: {
-    marginTop: 20,
-    backgroundColor: "#eee",
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: "center",
-  },
-  saveText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
   upload: {
-    marginTop: 8,
-    paddingVertical: 12,
-    alignItems: "center",
-  },
-  avatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    marginBottom: 8,
-  },
-  avatarPlaceholder: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: "#ddd",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  avatarInitials: {
-    fontSize: 32,
-    color: "#aaa",
+    paddingVertical: 8,
+    alignItems: "flex-start",
   },
 });

@@ -1,16 +1,10 @@
-import { Profile } from "@/app/index";
-import { router } from "expo-router";
+import { colors, type } from "@/theme";
+import { devSignup } from "@/dev/fixtures/auth";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { supabase } from "../../utils/supabase";
 
-import { devSignup } from "@/dev/fixtures/auth";
-
-interface Props {
-  setProfile: (profile: Profile) => void;
-}
-
-const SignupForm = ({ setProfile }: Props) => {
+const SignupForm = () => {
   const [userInput, setUserInput] = useState({
     firstName: "",
     lastName: "",
@@ -26,7 +20,8 @@ const SignupForm = ({ setProfile }: Props) => {
 
   const handleSubmit = async () => {
     try {
-      const { data, error } = await supabase.auth.signUp({
+      // onAuthStateChange in index loads profile after sign-up (when session exists)
+      const { error } = await supabase.auth.signUp({
         email: userInput.email,
         password: userInput.password,
         options: {
@@ -37,85 +32,77 @@ const SignupForm = ({ setProfile }: Props) => {
           },
         },
       });
+      if (error) throw error;
 
-      if (error) {
-        throw error;
-      } else {
-        console.log(data);
-      }
+      setUserInput({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        confirmEmail: "",
+        password: "",
+      });
     } catch (error) {
       console.error(error);
-      return;
     }
-
-    setUserInput({
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      confirmEmail: "",
-      password: "",
-    });
-
-    router.push("/");
   };
 
   return (
     <View style={styles.form}>
       {__DEV__ && (
         <Pressable onPress={() => setUserInput(devSignup)}>
-          <Text>Fill test data</Text>
+          <Text style={styles.devFill}>FILL TEST DATA</Text>
         </Pressable>
       )}
 
-      <Text style={styles.title}>Sign Up</Text>
+      <Text style={styles.title}>SIGN UP</Text>
 
       <TextInput
-        autoCapitalize='none'
-        placeholder='First Name'
-        placeholderTextColor='#888'
+        autoCapitalize="none"
+        placeholder="FIRST NAME"
+        placeholderTextColor={colors.muted}
         style={styles.input}
         value={userInput.firstName}
         onChangeText={handleInput("firstName")}
       />
       <TextInput
-        autoCapitalize='none'
-        placeholder='Last Name'
-        placeholderTextColor='#888'
+        autoCapitalize="none"
+        placeholder="LAST NAME"
+        placeholderTextColor={colors.muted}
         style={styles.input}
         value={userInput.lastName}
         onChangeText={handleInput("lastName")}
       />
       <TextInput
-        autoCapitalize='none'
-        placeholder='Username'
-        placeholderTextColor='#888'
+        autoCapitalize="none"
+        placeholder="USERNAME"
+        placeholderTextColor={colors.muted}
         style={styles.input}
         value={userInput.username}
         onChangeText={handleInput("username")}
       />
       <TextInput
-        autoCapitalize='none'
-        keyboardType='email-address'
-        placeholder='Email'
-        placeholderTextColor='#888'
+        autoCapitalize="none"
+        keyboardType="email-address"
+        placeholder="EMAIL"
+        placeholderTextColor={colors.muted}
         style={styles.input}
         value={userInput.email}
         onChangeText={handleInput("email")}
       />
       <TextInput
-        autoCapitalize='none'
-        keyboardType='email-address'
-        placeholder='Confirm Email'
-        placeholderTextColor='#888'
+        autoCapitalize="none"
+        keyboardType="email-address"
+        placeholder="CONFIRM EMAIL"
+        placeholderTextColor={colors.muted}
         style={styles.input}
         value={userInput.confirmEmail}
         onChangeText={handleInput("confirmEmail")}
       />
       <TextInput
-        autoCapitalize='none'
-        placeholder='Password'
-        placeholderTextColor='#888'
+        autoCapitalize="none"
+        placeholder="PASSWORD"
+        placeholderTextColor={colors.muted}
         secureTextEntry
         style={styles.input}
         value={userInput.password}
@@ -126,7 +113,7 @@ const SignupForm = ({ setProfile }: Props) => {
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
         onPress={handleSubmit}
       >
-        <Text style={styles.buttonText}>Enter</Text>
+        <Text style={styles.buttonText}>YO</Text>
       </Pressable>
     </View>
   );
@@ -139,38 +126,43 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 360,
     alignSelf: "center",
-    gap: 16,
+    gap: 12,
   },
   title: {
-    fontSize: 40,
-    fontWeight: "600",
-    color: "#000",
+    ...type.title,
+    color: colors.white,
+    marginBottom: 8,
   },
-  subtitle: {
-    fontSize: 16,
-    color: "#666",
+  devFill: {
+    color: colors.yellow,
+    fontWeight: "900",
+    fontSize: 11,
+    letterSpacing: 1,
   },
   input: {
     fontSize: 16,
-    color: "#000",
-    backgroundColor: "#f0f0f0",
-    borderRadius: 12,
+    fontWeight: "700",
+    color: colors.black,
+    backgroundColor: colors.white,
+    borderRadius: 8,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 14,
   },
   button: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#e0e0e0",
-    paddingVertical: 16,
-    borderRadius: 12,
+    backgroundColor: colors.black,
+    paddingVertical: 18,
+    borderRadius: 8,
+    marginTop: 8,
   },
   buttonText: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#000",
+    fontSize: 22,
+    fontWeight: "900",
+    color: colors.white,
+    letterSpacing: 2,
   },
   pressed: {
-    opacity: 0.7,
+    opacity: 0.85,
   },
 });

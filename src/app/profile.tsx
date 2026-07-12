@@ -1,9 +1,6 @@
-import React from 'react'
+import { Redirect } from "expo-router";
 
-const Profile = () => {
-  return (
-    <div>Profile</div>
-  )
+/** Legacy route — auth gate lives on `/` */
+export default function ProfileRoute() {
+  return <Redirect href="/" />;
 }
-
-export default Profile

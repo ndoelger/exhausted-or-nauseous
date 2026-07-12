@@ -1,6 +1,6 @@
-import { Profile } from "@/app/index";
 import LoginForm from "@/components/login-form";
 import SignupForm from "@/components/signup-form";
+import { colors, type } from "@/theme";
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -12,11 +12,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type Props = {
-  setProfile: (profile: Profile) => void;
-};
-
-const Login = ({ setProfile }: Props) => {
+const Login = () => {
   const insets = useSafeAreaInsets();
   const [isLogin, setIsLogin] = useState(true);
 
@@ -25,31 +21,28 @@ const Login = ({ setProfile }: Props) => {
       style={[
         styles.container,
         {
-          paddingTop: insets.top + 32,
+          paddingTop: insets.top + 48,
           paddingBottom: insets.bottom + 32,
-          paddingHorizontal: insets.left + 24,
+          paddingHorizontal: 24,
         },
       ]}
     >
+      <Text style={styles.brand}>EO•N</Text>
+      <Text style={styles.tagline}>EXHAUSTED OR NAUSEOUS</Text>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.wrapper}
       >
-        {isLogin ? (
-          <LoginForm setProfile={setProfile} />
-        ) : (
-          <SignupForm setProfile={setProfile} />
-        )}
-        <View style={styles.form}>
-          <Pressable
-            onPress={() => setIsLogin(!isLogin)}
-            style={({ pressed }) => [styles.button, pressed && styles.pressed]}
-          >
-            <Text style={styles.buttonText}>
-              {isLogin ? "Sign up" : "Log in"}
-            </Text>
-          </Pressable>
-        </View>
+        {isLogin ? <LoginForm /> : <SignupForm />}
+        <Pressable
+          onPress={() => setIsLogin(!isLogin)}
+          style={({ pressed }) => [styles.switch, pressed && styles.pressed]}
+        >
+          <Text style={styles.switchText}>
+            {isLogin ? "NO ACCOUNT? SIGN UP" : "HAVE AN ACCOUNT? LOG IN"}
+          </Text>
+        </Pressable>
       </KeyboardAvoidingView>
     </View>
   );
@@ -60,30 +53,36 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.purple,
+  },
+  brand: {
+    ...type.hero,
+    color: colors.white,
+    textAlign: "center",
+    fontSize: 72,
+  },
+  tagline: {
+    color: colors.white,
+    textAlign: "center",
+    fontWeight: "900",
+    fontSize: 12,
+    letterSpacing: 3,
+    marginBottom: 40,
+    opacity: 0.9,
   },
   wrapper: {
     width: "100%",
     gap: 16,
   },
-  form: {
-    width: "100%",
-    maxWidth: 360,
-    alignSelf: "center",
-    gap: 16,
-  },
-  button: {
+  switch: {
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#e0e0e0",
     paddingVertical: 16,
-    borderRadius: 12,
   },
-  buttonText: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#000",
+  switchText: {
+    color: colors.white,
+    fontWeight: "900",
+    fontSize: 12,
+    letterSpacing: 1,
   },
   pressed: {
     opacity: 0.7,

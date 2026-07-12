@@ -1,15 +1,9 @@
+import { colors, type } from "@/theme";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { supabase } from "../../utils/supabase";
-import { Profile } from "@/app/index";
-import { router } from "expo-router";
 
-
-type Props = {
-  setProfile: (profile: Profile) => void;
-}
-
-const LoginForm = ({ setProfile }: Props) => {
+const LoginForm = () => {
   const [userInput, setUserInput] = useState({
     email: "",
     password: "",
@@ -21,13 +15,11 @@ const LoginForm = ({ setProfile }: Props) => {
 
   const handleSubmit = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: userInput.email,
         password: userInput.password,
       });
       if (error) throw error;
-      console.log(data);
-      router.push("/");
     } catch (error) {
       console.error(error);
     }
@@ -35,22 +27,22 @@ const LoginForm = ({ setProfile }: Props) => {
 
   return (
     <View style={styles.form}>
-      <Text style={styles.title}>Log In</Text>
+      <Text style={styles.title}>LOG IN</Text>
 
       <TextInput
-        autoCapitalize='none'
-        keyboardType='email-address'
-        placeholder='Email'
-        placeholderTextColor='#888'
+        autoCapitalize="none"
+        keyboardType="email-address"
+        placeholder="EMAIL"
+        placeholderTextColor={colors.muted}
         style={styles.input}
         value={userInput.email}
         onChangeText={handleInput("email")}
       />
 
       <TextInput
-        autoCapitalize='none'
-        placeholder='Password'
-        placeholderTextColor='#888'
+        autoCapitalize="none"
+        placeholder="PASSWORD"
+        placeholderTextColor={colors.muted}
         secureTextEntry
         style={styles.input}
         value={userInput.password}
@@ -61,7 +53,7 @@ const LoginForm = ({ setProfile }: Props) => {
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
         onPress={handleSubmit}
       >
-        <Text style={styles.buttonText}>Enter</Text>
+        <Text style={styles.buttonText}>YO</Text>
       </Pressable>
     </View>
   );
@@ -74,38 +66,37 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 360,
     alignSelf: "center",
-    gap: 16,
+    gap: 12,
   },
   title: {
-    fontSize: 40,
-    fontWeight: "600",
-    color: "#000",
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#666",
+    ...type.title,
+    color: colors.white,
+    marginBottom: 8,
   },
   input: {
     fontSize: 16,
-    color: "#000",
-    backgroundColor: "#f0f0f0",
-    borderRadius: 12,
+    fontWeight: "700",
+    color: colors.black,
+    backgroundColor: colors.white,
+    borderRadius: 8,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 14,
   },
   button: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#e0e0e0",
-    paddingVertical: 16,
-    borderRadius: 12,
+    backgroundColor: colors.black,
+    paddingVertical: 18,
+    borderRadius: 8,
+    marginTop: 8,
   },
   buttonText: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#000",
+    fontSize: 22,
+    fontWeight: "900",
+    color: colors.white,
+    letterSpacing: 2,
   },
   pressed: {
-    opacity: 0.7,
+    opacity: 0.85,
   },
 });

@@ -1,10 +1,10 @@
-import UserProfileModal, {
-  UserProfile,
-} from "@/components/user-profile-modal";
+import Avatar from "@/components/avatar";
+import UserProfileModal from "@/components/user-profile-modal";
+import { colors } from "@/theme";
+import { mapProfile, type Profile } from "@/types/profile";
 import { useRef, useState } from "react";
 import {
   FlatList,
-  Image,
   Keyboard,
   Modal,
   Pressable,
@@ -15,17 +15,17 @@ import {
 } from "react-native";
 import { supabase } from "../../utils/supabase";
 
-type SearchResult = UserProfile & {
-  username: string | null;
+type Props = {
+  myUserId: string;
 };
 
-const Search = () => {
+const Search = ({ myUserId }: Props) => {
   const inputRef = useRef<TextInput>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [results, setResults] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
+  const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
 
   const searchUsers = async (text: string) => {
     setLoading(true);
@@ -43,7 +43,7 @@ const Search = () => {
 
     let dbQuery = supabase
       .from("profiles")
-      .select("id, username, first_name, last_name, avatar_url, emotion");
+      .select("id, username, first_name, last_name, avatar_url, emotion, email");
 
     if (last) {
       dbQuery = dbQuery
@@ -56,7 +56,7 @@ const Search = () => {
     }
 
     const { data } = await dbQuery.limit(20);
-    setResults(data ?? []);
+    setResults((data ?? []).map(mapProfile));
     setLoading(false);
   };
 
@@ -69,7 +69,7 @@ const Search = () => {
     Keyboard.dismiss();
   };
 
-  const openUserProfile = (user: SearchResult) => {
+  const openUserProfile = (user: Profile) => {
     setSelectedUser(user);
     closeSearch();
   };
@@ -80,8 +80,8 @@ const Search = () => {
         <TextInput
           editable={false}
           pointerEvents="none"
-          placeholder="Search users..."
-          placeholderTextColor="#888"
+          placeholder="FIND PEEPS"
+          placeholderTextColor={colors.muted}
           style={styles.bar}
           value={query}
         />
@@ -99,8 +99,8 @@ const Search = () => {
               ref={inputRef}
               autoFocus
               autoCapitalize="none"
-              placeholder="Search users..."
-              placeholderTextColor="#888"
+              placeholder="FIND PEEPS"
+              placeholderTextColor={colors.muted}
               style={styles.bar}
               value={query}
               onChangeText={searchUsers}
@@ -108,49 +108,37 @@ const Search = () => {
 
             <View style={styles.dropdown}>
               {loading ? (
-                <Text style={styles.empty}>Loading...</Text>
+                <Text style={styles.empty}>LOADING...</Text>
               ) : query.trim() && results.length === 0 ? (
-                <Text style={styles.empty}>No users found</Text>
+                <Text style={styles.empty}>NOBODY HERE</Text>
               ) : results.length === 0 ? (
-                <Text style={styles.empty}>Type to search</Text>
+                <Text style={styles.empty}>TYPE A NAME</Text>
               ) : (
                 <FlatList
                   data={results}
                   keyExtractor={(item) => item.id}
                   keyboardShouldPersistTaps="handled"
-                  renderItem={({ item }) => {
-                    const initials =
-                      (item.first_name?.[0] ?? "").toUpperCase() +
-                      (item.last_name?.[0] ?? "").toUpperCase();
-
-                    return (
-                      <Pressable
-                        style={styles.result}
-                        onPress={() => openUserProfile(item)}
-                      >
-                        {item.avatar_url ? (
-                          <Image
-                            source={{ uri: item.avatar_url }}
-                            style={styles.avatar}
-                          />
-                        ) : (
-                          <View style={styles.avatarPlaceholder}>
-                            <Text style={styles.avatarInitials}>
-                              {initials}
-                            </Text>
-                          </View>
-                        )}
-                        <View style={styles.resultText}>
-                          <Text style={styles.resultName}>
-                            {item.first_name} {item.last_name}
-                          </Text>
-                          <Text style={styles.resultMeta}>
-                            @{item.username}
-                          </Text>
-                        </View>
-                      </Pressable>
-                    );
-                  }}
+                  renderItem={({ item }) => (
+                    <Pressable
+                      style={styles.result}
+                      onPress={() => openUserProfile(item)}
+                    >
+                      <View style={styles.avatarWrap}>
+                        <Avatar
+                          uri={item.avatarUrl}
+                          firstName={item.firstName}
+                          lastName={item.lastName}
+                          size={32}
+                        />
+                      </View>
+                      <View style={styles.resultText}>
+                        <Text style={styles.resultName}>
+                          {item.firstName} {item.lastName}
+                        </Text>
+                        <Text style={styles.resultMeta}>@{item.username}</Text>
+                      </View>
+                    </Pressable>
+                  )}
                 />
               )}
             </View>
@@ -161,6 +149,7 @@ const Search = () => {
       {selectedUser && (
         <UserProfileModal
           user={selectedUser}
+          myUserId={myUserId}
           onClose={() => setSelectedUser(null)}
         />
       )}
@@ -179,7 +168,7 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.25)",
+    backgroundColor: "rgba(108,52,131,0.55)",
     justifyContent: "flex-start",
     paddingTop: 80,
     paddingHorizontal: 24,
@@ -191,20 +180,17 @@ const styles = StyleSheet.create({
   },
   bar: {
     fontSize: 16,
-    color: "#000",
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 12,
+    fontWeight: "700",
+    color: colors.black,
+    backgroundColor: colors.white,
+    borderRadius: 8,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 14,
   },
   dropdown: {
-    marginTop: 4,
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 12,
+    marginTop: 8,
+    backgroundColor: colors.white,
+    borderRadius: 8,
     maxHeight: 240,
     overflow: "hidden",
   },
@@ -214,43 +200,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: colors.border,
   },
-  avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+  avatarWrap: {
     marginRight: 12,
-  },
-  avatarPlaceholder: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "#ddd",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  avatarInitials: {
-    fontSize: 14,
-    color: "#aaa",
   },
   resultText: {
     flex: 1,
   },
   resultName: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
+    fontWeight: "800",
+    color: colors.black,
   },
   resultMeta: {
-    fontSize: 14,
-    color: "#666",
+    fontSize: 13,
+    fontWeight: "600",
+    color: colors.muted,
     marginTop: 2,
   },
   empty: {
     textAlign: "center",
-    color: "#666",
+    color: colors.muted,
+    fontWeight: "800",
+    letterSpacing: 1,
+    fontSize: 12,
     paddingVertical: 16,
   },
 });
