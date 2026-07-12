@@ -54,7 +54,7 @@ const LoginForm = () => {
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
         onPress={handleSubmit}
       >
-        <Text style={styles.buttonText}>YO</Text>
+        <Text style={styles.buttonText}>LOG IN</Text>
       </Pressable>
     </View>
   );

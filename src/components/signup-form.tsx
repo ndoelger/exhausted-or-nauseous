@@ -114,7 +114,7 @@ const SignupForm = () => {
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
         onPress={handleSubmit}
       >
-        <Text style={styles.buttonText}>YO</Text>
+        <Text style={styles.buttonText}>SIGN UP</Text>
       </Pressable>
     </View>
   );

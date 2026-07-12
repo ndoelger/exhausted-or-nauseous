@@ -106,7 +106,7 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
 
       <View style={styles.searchWrap}>
         <Search myUserId={profile.id} />
-        <FontPicker />
+        {/* <FontPicker /> */}
       </View>
 
       <View style={styles.actions}>
@@ -204,8 +204,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    paddingHorizontal: 24,
-    gap: 16,
+    paddingHorizontal: 20,
+    paddingBottom: 80,
+    gap: 20,
   },
   prompt: {
     ...font.black,
@@ -216,28 +217,31 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   yoButton: {
-    width: "100%",
-    maxWidth: 340,
+    width: "90%",
+    maxWidth: 400,
+    minHeight: 110,
     backgroundColor: colors.white,
-    paddingVertical: 28,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingVertical: 36,
+    paddingHorizontal: 24,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "center",
     flexDirection: "row",
-    gap: 12,
+    gap: 14,
   },
   yoButtonSelected: {
     backgroundColor: colors.yellow,
   },
   yoButtonText: {
     ...font.black,
-    fontSize: 28,
+    fontSize: 36,
     letterSpacing: 1,
     color: colors.black,
+    textAlign: "center",
   },
   yoEmoji: {
-    fontSize: 28,
+    fontSize: 36,
   },
   pressed: {
     opacity: 0.85,
