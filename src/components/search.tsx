@@ -60,7 +60,7 @@ const Search = ({ myUserId }: Props) => {
     let dbQuery = supabase
       .from("profiles")
       .select(
-        "id, username, first_name, last_name, avatar_url, emotion, email",
+        "id, username, first_name, last_name, avatar_url, emotion, phone",
       );
 
     if (last) {

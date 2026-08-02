@@ -4,8 +4,12 @@ import { registerPushToken } from "../../utils/register-push";
 import { supabase } from "../../utils/supabase";
 import Home from "./home";
 import Login from "./login";
+import Onboarding from "./onboarding";
 
 export type { Profile };
+
+const needsOnboarding = (profile: Profile) =>
+  !profile.firstName.trim() || !profile.lastName.trim();
 
 const Index = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -15,7 +19,7 @@ const Index = () => {
     const { data, error } = await supabase
       .from("profiles")
       .select(
-        "id, email, first_name, last_name, username, emotion, avatar_url",
+        "id, phone, first_name, last_name, username, emotion, avatar_url",
       )
       .eq("id", userId)
       .single();
@@ -64,9 +68,13 @@ const Index = () => {
 
   if (!ready) return null;
 
-  return !profile ? (
-    <Login />
-  ) : (
+  if (!profile) return <Login />;
+
+  if (needsOnboarding(profile)) {
+    return <Onboarding profile={profile} onComplete={setProfile} />;
+  }
+
+  return (
     <Home
       profile={profile}
       setProfile={setProfile}

@@ -1,6 +1,7 @@
 import { font } from "@/fonts";
 import LoginForm from "@/components/login-form";
 import SignupForm from "@/components/signup-form";
+import VerifyOtpForm from "@/components/verify-otp-form";
 import { colors, type } from "@/theme";
 import { useState } from "react";
 import {
@@ -16,6 +17,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const Login = () => {
   const insets = useSafeAreaInsets();
   const [isLogin, setIsLogin] = useState(true);
+  // After OTP is sent, show the code entry form for this E.164 phone
+  const [pendingPhone, setPendingPhone] = useState<string | null>(null);
 
   return (
     <View
@@ -35,15 +38,26 @@ const Login = () => {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.wrapper}
       >
-        {isLogin ? <LoginForm /> : <SignupForm />}
-        <Pressable
-          onPress={() => setIsLogin(!isLogin)}
-          style={({ pressed }) => [styles.switch, pressed && styles.pressed]}
-        >
-          <Text style={styles.switchText}>
-            {isLogin ? "NO ACCOUNT? SIGN UP" : "HAVE AN ACCOUNT? LOG IN"}
-          </Text>
-        </Pressable>
+        {pendingPhone ? (
+          <VerifyOtpForm
+            phone={pendingPhone}
+            onBack={() => setPendingPhone(null)}
+          />
+        ) : isLogin ? (
+          <LoginForm onCodeSent={setPendingPhone} />
+        ) : (
+          <SignupForm />
+        )}
+        {!pendingPhone && (
+          <Pressable
+            onPress={() => setIsLogin(!isLogin)}
+            style={({ pressed }) => [styles.switch, pressed && styles.pressed]}
+          >
+            <Text style={styles.switchText}>
+              {isLogin ? "NO ACCOUNT? SIGN UP" : "HAVE AN ACCOUNT? LOG IN"}
+            </Text>
+          </Pressable>
+        )}
       </KeyboardAvoidingView>
     </View>
   );

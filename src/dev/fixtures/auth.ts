@@ -11,3 +11,8 @@ export const devSignup = {
     confirmEmail: randomEmail,
     password: "TestPassword123!",
   };
+
+  export const devLogin = {
+    email: "alice.anderson@example.com",
+    password: "TestPassword123!",
+  };

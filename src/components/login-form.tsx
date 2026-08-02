@@ -1,60 +1,61 @@
 import { font } from "@/fonts";
 import { colors, type } from "@/theme";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { supabase } from "../../utils/supabase";
 
-const LoginForm = () => {
-  const [userInput, setUserInput] = useState({
-    email: "",
-    password: "",
-  });
+type Props = {
+  onCodeSent: (phone: string) => void;
+};
 
-  const handleInput = (field: string) => (value: string) => {
-    setUserInput({ ...userInput, [field]: value });
-  };
+const LoginForm = ({ onCodeSent }: Props) => {
+  const [phoneNumber, setPhoneNumber] = useState("");
 
+  // Send SMS OTP, then hand off to the code entry screen
   const handleSubmit = async () => {
+    if (phoneNumber.length !== 10) {
+      Alert.alert("Please enter a valid phone number");
+      return;
+    }
+
+    const phone = `+1${phoneNumber}`;
+    console.log("[auth] sending OTP to", phone);
+
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: userInput.email,
-        password: userInput.password,
-      });
+      const { error, data } = await supabase.auth.signInWithOtp({ phone });
       if (error) throw error;
+      console.log("[auth] OTP sent", data);
+      onCodeSent(phone);
     } catch (error) {
-      console.error(error);
+      console.error("[auth] OTP send failed", error);
     }
   };
 
   return (
     <View style={styles.form}>
-      <Text style={styles.title}>LOG IN</Text>
+      <Text style={styles.title}>ENTER YOUR PHONE NUMBER</Text>
 
-      <TextInput
-        autoCapitalize="none"
-        keyboardType="email-address"
-        placeholder="EMAIL"
-        placeholderTextColor={colors.muted}
-        style={styles.input}
-        value={userInput.email}
-        onChangeText={handleInput("email")}
-      />
-
-      <TextInput
-        autoCapitalize="none"
-        placeholder="PASSWORD"
-        placeholderTextColor={colors.muted}
-        secureTextEntry
-        style={styles.input}
-        value={userInput.password}
-        onChangeText={handleInput("password")}
-      />
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={[styles.countryCode, { marginRight: 8 }]}>
+          <Text style={styles.countryCodeText}>+1</Text>
+        </View>
+        <TextInput
+          autoCapitalize="none"
+          keyboardType="phone-pad"
+          maxLength={10}
+          placeholder="PHONE NUMBER"
+          placeholderTextColor={colors.muted}
+          style={[styles.input, { flex: 1 }]}
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+        />
+      </View>
 
       <Pressable
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
         onPress={handleSubmit}
       >
-        <Text style={styles.buttonText}>LOG IN</Text>
+        <Text style={styles.buttonText}>SEND CODE</Text>
       </Pressable>
     </View>
   );
@@ -73,6 +74,17 @@ const styles = StyleSheet.create({
     ...type.title,
     color: colors.white,
     marginBottom: 8,
+  },
+  countryCode: {
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  countryCodeText: {
+    ...font.bold,
+    fontSize: 16,
+    color: colors.black,
   },
   input: {
     ...font.bold,
