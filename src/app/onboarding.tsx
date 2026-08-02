@@ -5,6 +5,7 @@ import { type Profile } from "@/types/profile";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import {
+  ActionSheetIOS,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -26,6 +27,7 @@ const Onboarding = ({ profile, onComplete }: Props) => {
   const insets = useSafeAreaInsets();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState(profile.username ?? "");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -62,7 +64,7 @@ const Onboarding = ({ profile, onComplete }: Props) => {
     console.log("[onboarding] avatar saved");
   };
 
-  const handlePickPicture = async () => {
+  const handlePickFromLibrary = async () => {
     try {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -71,6 +73,7 @@ const Onboarding = ({ profile, onComplete }: Props) => {
         return;
       }
 
+      console.log("[onboarding] opening photo library");
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images"],
         allowsEditing: true,
@@ -81,34 +84,87 @@ const Onboarding = ({ profile, onComplete }: Props) => {
       if (!asset) return;
       await uploadAvatar(asset);
     } catch (error) {
-      console.error("[onboarding] avatar upload failed", error);
+      console.error("[onboarding] library pick failed", error);
       Alert.alert("Failed to upload picture");
     }
   };
 
+  const handleTakePicture = async () => {
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission to use the camera is required");
+        return;
+      }
+
+      console.log("[onboarding] opening camera");
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        quality: 0.7,
+      });
+      if (result.canceled) return;
+      const asset = result.assets[0];
+      if (!asset) return;
+      await uploadAvatar(asset);
+    } catch (error) {
+      console.error("[onboarding] camera capture failed", error);
+      Alert.alert("Failed to take picture");
+    }
+  };
+
+  // Choose: library or camera → then upload to storage
+  const handlePicturePress = () => {
+    if (Platform.OS === "ios") {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ["Cancel", "Take Photo", "Choose from Library"],
+          cancelButtonIndex: 0,
+        },
+        (buttonIndex) => {
+          if (buttonIndex === 1) handleTakePicture();
+          if (buttonIndex === 2) handlePickFromLibrary();
+        },
+      );
+      return;
+    }
+
+    Alert.alert("Profile picture", undefined, [
+      { text: "Take Photo", onPress: handleTakePicture },
+      { text: "Choose from Library", onPress: handlePickFromLibrary },
+      { text: "Cancel", style: "cancel" },
+    ]);
+  };
+
   const canContinue =
-    firstName.trim().length > 0 && lastName.trim().length > 0 && !saving;
+    firstName.trim().length > 0 &&
+    lastName.trim().length > 0 &&
+    username.trim().length > 0 &&
+    !saving;
 
   const handleContinue = async () => {
     const first = firstName.trim();
     const last = lastName.trim();
-    if (!first || !last) {
-      Alert.alert("First name and last name are required");
+    const user = username.trim().toLowerCase();
+    if (!first || !last || !user) {
+      Alert.alert("First name, last name, and username are required");
       return;
     }
 
     setSaving(true);
-    console.log("[onboarding] saving name");
+    console.log("[onboarding] saving profile");
     try {
-      await supabase.auth.updateUser({
-        data: { firstName: first, lastName: last },
+      const { error: authError } = await supabase.auth.updateUser({
+        data: { firstName: first, lastName: last, username: user },
       });
+      if (authError) throw authError;
 
       const { error } = await supabase
         .from("profiles")
         .update({
           first_name: first,
           last_name: last,
+          username: user,
         })
         .eq("id", profile.id);
       if (error) throw error;
@@ -117,6 +173,7 @@ const Onboarding = ({ profile, onComplete }: Props) => {
         ...profile,
         firstName: first,
         lastName: last,
+        username: user,
         avatarUrl: avatarUrl ?? profile.avatarUrl,
       });
       console.log("[onboarding] complete");
@@ -151,7 +208,7 @@ const Onboarding = ({ profile, onComplete }: Props) => {
 
           <Pressable
             style={styles.picture}
-            onPress={handlePickPicture}
+            onPress={handlePicturePress}
           >
             <Avatar
               uri={avatarUrl}
@@ -178,6 +235,15 @@ const Onboarding = ({ profile, onComplete }: Props) => {
             style={styles.input}
             value={lastName}
             onChangeText={setLastName}
+          />
+          <TextInput
+            autoCapitalize="none"
+            autoCorrect={false}
+            placeholder="USERNAME"
+            placeholderTextColor={colors.muted}
+            style={styles.input}
+            value={username}
+            onChangeText={setUsername}
           />
 
           <Pressable

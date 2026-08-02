@@ -28,6 +28,7 @@ const LoginForm = ({ onCodeSent }: Props) => {
       onCodeSent(phone);
     } catch (error) {
       console.error("[auth] OTP send failed", error);
+      Alert.alert("Could not send code. Check the number and try again.");
     }
   };
 

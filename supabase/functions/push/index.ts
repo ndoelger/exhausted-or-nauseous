@@ -1,14 +1,16 @@
 /**
  * Expo push sender — triggered by a Database Webhook on public.notifications INSERT.
  *
- * Setup:
+ * REQUIRED before production (verify in dashboard):
  * 1. Create an Expo access token (expo.dev → Access tokens), enable Enhanced Security
- * 2. supabase secrets set EXPO_ACCESS_TOKEN=your_token
- * 3. supabase functions deploy push --no-verify-jwt
+ * 2. npx supabase secrets set EXPO_ACCESS_TOKEN=your_token  (on the app’s branch)
+ * 3. npx supabase functions deploy push --no-verify-jwt
  * 4. Dashboard → Database → Webhooks → create hook:
  *    - table: notifications, event: Insert
  *    - type: Supabase Edge Functions → push
- *    - add auth header with service role key
+ *    - auth header: Bearer <service_role_key>
+ *
+ * Without 2–4, YO notifications stay in-app only (no device push).
  */
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";

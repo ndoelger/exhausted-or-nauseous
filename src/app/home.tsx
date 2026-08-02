@@ -1,15 +1,24 @@
-import FontPicker from "@/components/font-picker";
 import FriendsModal from "@/components/friends-modal";
 import NotificationsModal from "@/components/notifications-modal";
 import ProfileModal from "@/components/profile-modal";
 import Search from "@/components/search";
 import { font } from "@/fonts";
 import { colors, type } from "@/theme";
-import { EMOTION, type Profile } from "@/types/profile";
-import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { type Profile } from "@/types/profile";
+import { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "../../utils/supabase";
+
+const exhaustedImg = require("../../assets/emotions/exhausted.png");
+const nauseousImg = require("../../assets/emotions/nauseous.png");
 
 interface Props {
   profile: Profile;
@@ -23,6 +32,8 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
   const [showFriendsModal, setShowFriendsModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const noteOpacity = useRef(new Animated.Value(0)).current;
+  const noteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadUnread = async () => {
     const { count, error } = await supabase
@@ -42,6 +53,29 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
     loadUnread();
   }, [profile.id]);
 
+  useEffect(() => {
+    return () => {
+      if (noteTimer.current) clearTimeout(noteTimer.current);
+    };
+  }, []);
+
+  // Ping friends, show note for 5s, then fade out (slot stays reserved so circles don't jump)
+  const handleEmotion = (emotion: "Exhausted" | "Nauseous") => {
+    console.log("[home] emotion tap", emotion);
+    updateEmotion(emotion);
+
+    if (noteTimer.current) clearTimeout(noteTimer.current);
+    noteOpacity.setValue(1);
+    noteTimer.current = setTimeout(() => {
+      console.log("[home] fading confirmation note");
+      Animated.timing(noteOpacity, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    }, 2000);
+  };
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.topBar}>
@@ -57,7 +91,7 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
         <Text style={styles.brand}>E🥱O🤢N</Text>
 
         <View style={[styles.topSide, styles.topRight]}>
-          {/* <Pressable
+          <Pressable
             onPress={() => setShowNotificationsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
           >
@@ -69,7 +103,7 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
                 </Text>
               </View>
             )}
-          </Pressable> */}
+          </Pressable>
           <Pressable
             onPress={() => setShowFriendsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
@@ -111,27 +145,28 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
 
       <View style={styles.actions}>
         <Pressable
-          onPress={() => updateEmotion("Exhausted")}
+          onPress={() => handleEmotion("Exhausted")}
           style={({ pressed }) => [
             styles.yoButton,
-            profile.emotion === EMOTION.Exhausted && styles.yoButtonSelected,
-            pressed && styles.pressed,
+            pressed && styles.yoButtonPressed,
           ]}
         >
-          <Text style={styles.yoButtonText}>EXHAUSTED</Text>
-          <Text style={styles.yoEmoji}>🥱</Text>
+          <Image source={exhaustedImg} style={styles.yoEmoji} />
         </Pressable>
         <Pressable
-          onPress={() => updateEmotion("Nauseous")}
+          onPress={() => handleEmotion("Nauseous")}
           style={({ pressed }) => [
             styles.yoButton,
-            profile.emotion === EMOTION.Nauseous && styles.yoButtonSelected,
-            pressed && styles.pressed,
+            pressed && styles.yoButtonPressed,
           ]}
         >
-          <Text style={styles.yoButtonText}>NAUSEOUS</Text>
-          <Text style={styles.yoEmoji}>🤢</Text>
+          <Image source={nauseousImg} style={styles.yoEmoji} />
         </Pressable>
+        <View style={styles.noteSlot}>
+          <Animated.Text style={[styles.note, { opacity: noteOpacity }]}>
+            we let them know.
+          </Animated.Text>
+        </View>
       </View>
     </View>
   );
@@ -206,45 +241,41 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 20,
     paddingBottom: 80,
-    gap: 20,
-  },
-  prompt: {
-    ...font.black,
-    color: colors.white,
-    fontSize: 12,
-    letterSpacing: 3,
-    marginBottom: 8,
-    opacity: 0.85,
+    gap: 28,
   },
   yoButton: {
-    width: "90%",
-    maxWidth: 400,
-    minHeight: 110,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
     backgroundColor: colors.white,
-    paddingVertical: 36,
-    paddingHorizontal: 24,
-    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    alignSelf: "center",
-    flexDirection: "row",
-    gap: 14,
   },
-  yoButtonSelected: {
+  // Green only while finger is down
+  yoButtonPressed: {
     backgroundColor: colors.yellow,
+    transform: [{ scale: 0.96 }],
   },
-  yoButtonText: {
-    ...font.black,
-    fontSize: 36,
-    letterSpacing: 1,
-    color: colors.black,
-    textAlign: "center",
-  },
+  // ~76% of 200px circle — image centers cleanly unlike emoji Text
   yoEmoji: {
-    fontSize: 36,
+    width: 170,
+    height: 170,
+  },
+  // Fixed height so showing/hiding the note never shifts the circles
+  noteSlot: {
+    height: 28,
+    marginTop: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  note: {
+    ...font.black,
+    color: colors.white,
+    fontSize: 16,
+    letterSpacing: 1,
   },
   pressed: {
     opacity: 0.85,
-    transform: [{ scale: 0.98 }],
+    transform: [{ scale: 0.96 }],
   },
 });

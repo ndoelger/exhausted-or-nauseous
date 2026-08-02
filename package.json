@@ -63,7 +63,8 @@
     "lint": "expo lint",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
-    "db:push": "supabase db push",
+    "db:push": "node scripts/db-push-develop.js",
+    "db:push:develop": "node scripts/db-push-develop.js",
     "db:reset": "supabase db reset",
     "test:friends": "node scripts/test-friends.js",
     "seed:dev-users": "node scripts/seed-dev-users.js"
