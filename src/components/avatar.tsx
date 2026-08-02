@@ -7,9 +7,17 @@ type Props = {
   firstName?: string | null;
   lastName?: string | null;
   size?: number;
+  /** Circle outline around the placeholder (e.g. on purple bg) */
+  strokeColor?: string;
 };
 
-const Avatar = ({ uri, firstName, lastName, size = 40 }: Props) => {
+const Avatar = ({
+  uri,
+  firstName,
+  lastName,
+  size = 40,
+  strokeColor,
+}: Props) => {
   const initials =
     (firstName?.[0] ?? "").toUpperCase() + (lastName?.[0] ?? "").toUpperCase();
 
@@ -21,6 +29,9 @@ const Avatar = ({ uri, firstName, lastName, size = 40 }: Props) => {
           width: size,
           height: size,
           borderRadius: size / 2,
+          ...(strokeColor
+            ? { borderWidth: 2, borderColor: strokeColor }
+            : null),
         }}
       />
     );
@@ -34,6 +45,9 @@ const Avatar = ({ uri, firstName, lastName, size = 40 }: Props) => {
           width: size,
           height: size,
           borderRadius: size / 2,
+          ...(strokeColor
+            ? { borderWidth: 2, borderColor: strokeColor }
+            : null),
         },
       ]}
     >

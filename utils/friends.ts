@@ -20,7 +20,7 @@ export type FriendRow = {
 };
 
 const PROFILE_FIELDS =
-  "id, username, first_name, last_name, avatar_url, emotion, email";
+  "id, username, first_name, last_name, avatar_url, emotion, phone";
 
 /** Accepted friends + incoming pending requests for this user. */
 export async function listFriends(profileId: string): Promise<{

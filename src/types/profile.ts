@@ -8,7 +8,7 @@ export const EMOTION = {
 /** App profile shape (camelCase). Use mapProfile() at the Supabase boundary. */
 export type Profile = {
   id: string;
-  email: string | null;
+  phone: string | null;
   firstName: string;
   lastName: string;
   username: string;
@@ -19,7 +19,7 @@ export type Profile = {
 /** Raw profiles row from Supabase */
 export type ProfileRow = {
   id: string;
-  email?: string | null;
+  phone?: string | null;
   first_name?: string | null;
   last_name?: string | null;
   username?: string | null;
@@ -37,7 +37,7 @@ function mapEmotion(value?: string | null): Emotion {
 export function mapProfile(row: ProfileRow): Profile {
   return {
     id: row.id,
-    email: row.email ?? null,
+    phone: row.phone ?? null,
     firstName: row.first_name ?? "",
     lastName: row.last_name ?? "",
     username: row.username ?? "",
