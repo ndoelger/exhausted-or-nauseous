@@ -1,0 +1,51 @@
+# Production — EAS store builds against Supabase `main`
+#
+# Required repo secret: EXPO_TOKEN
+# EAS production env: EXPO_PUBLIC_SUPABASE_URL / KEY for main branch
+name: Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to build
+        required: true
+        default: all
+        type: choice
+        options: [all, ios, android]
+
+concurrency:
+  group: production-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: EAS production build
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Expo / EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production (non-blocking)
+        run: >
+          eas build
+          --profile production
+          --platform ${{ github.event.inputs.platform || 'all' }}
+          --non-interactive
+          --no-wait
