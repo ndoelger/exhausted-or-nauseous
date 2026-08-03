@@ -73,7 +73,7 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
         duration: 400,
         useNativeDriver: true,
       }).start();
-    }, 2000);
+    }, 1000);
   };
 
   return (
