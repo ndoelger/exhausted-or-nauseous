@@ -1,7 +1,7 @@
 {
   "configVersion": 0,
   "apple": {
-    "copyright": "2026 Nicholas Doelger",
+    "copyright": "2026 Exhausted or Nauseous",
     "categories": ["SOCIAL_NETWORKING", "LIFESTYLE"],
     "advisory": {
       "alcoholTobaccoOrDrugUseOrReferences": "NONE",
@@ -52,9 +52,6 @@
       "phone": "+18609166904",
       "demoRequired": false,
       "notes": "Sign in with phone OTP (SMS). After verify, complete onboarding (name, username, optional photo). To test friend flows, create a second account on another device. Emotion taps notify accepted friends."
-    },
-    "release": {
-      "automaticRelease": false
     }
   }
 }

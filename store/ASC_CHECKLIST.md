@@ -30,18 +30,18 @@ Expected result: **4+** (or similar low rating).
 
 ## App Privacy (nutrition labels)
 
-Data linked to identity (collected):
+Full click-by-click answers: `store/APP_PRIVACY.md`
 
-| Type | Purpose | Linked to identity? | Used for tracking? |
-|------|---------|---------------------|--------------------|
-| Phone Number | Account / Auth | Yes | No |
-| Name | App functionality (profile) | Yes | No |
-| User ID / Username | App functionality | Yes | No |
-| Photos / Videos (optional avatar) | App functionality | Yes | No |
-| Other User Content (emotion status, friend graph) | App functionality | Yes | No |
-| Device ID (push token) | App functionality (notifications) | Yes | No |
+Short version — collect **Yes**, tracking **No** for all of these:
 
-Do **not** claim tracking unless you add ads/analytics SDKs that track across apps.
+| Type | Purpose | Linked? | Tracking? |
+|------|---------|---------|-----------|
+| Phone Number | App Functionality | Yes | No |
+| Name | App Functionality | Yes | No |
+| User ID | App Functionality | Yes | No |
+| Photos or Videos | App Functionality | Yes | No |
+| Other User Content | App Functionality | Yes | No |
+| Device ID | App Functionality | Yes | No |
 
 ## Review contact
 
