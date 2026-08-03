@@ -36,10 +36,12 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
   const noteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadUnread = async () => {
+    // Activity = emotion updates only (friend requests live under FRIENDS)
     const { count, error } = await supabase
       .from("notifications")
       .select("id", { count: "exact", head: true })
       .eq("user_id", profile.id)
+      .eq("type", "emotion")
       .is("read_at", null);
 
     if (error) {
@@ -52,9 +54,9 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
   useEffect(() => {
     loadUnread();
 
-    // Live badge when friends ping you
+    // Live badge when a friend updates their emotion
     const channel = supabase
-      .channel(`notes:${profile.id}`)
+      .channel(`activity:${profile.id}`)
       .on(
         "postgres_changes",
         {
@@ -63,8 +65,10 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
           table: "notifications",
           filter: `user_id=eq.${profile.id}`,
         },
-        () => {
-          setUnreadCount((n) => n + 1);
+        (payload) => {
+          if (payload.new?.type === "emotion") {
+            setUnreadCount((n) => n + 1);
+          }
         },
       )
       .subscribe();
@@ -107,16 +111,11 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
           >
             <Text style={styles.navLabel}>ME</Text>
           </Pressable>
-        </View>
-
-        <Text style={styles.brand}>E🥱O🤢N</Text>
-
-        <View style={[styles.topSide, styles.topRight]}>
           <Pressable
             onPress={() => setShowNotificationsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
           >
-            <Text style={styles.navLabel}>NOTES</Text>
+            <Text style={styles.navLabel}>ACTIVITY</Text>
             {unreadCount > 0 && (
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>
@@ -125,6 +124,11 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
               </View>
             )}
           </Pressable>
+        </View>
+
+        <Text style={styles.brand}>E🥱O🤢N</Text>
+
+        <View style={[styles.topSide, styles.topRight]}>
           <Pressable
             onPress={() => setShowFriendsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
@@ -210,6 +214,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    gap: 4,
   },
   brand: {
     ...type.title,

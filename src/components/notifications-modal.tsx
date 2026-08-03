@@ -31,6 +31,7 @@ const NotificationsModal = ({ profileId, onClose }: Props) => {
 
   const load = async () => {
     setLoading(true);
+    // Emotion updates only — friend requests stay in FRIENDS
     const { data, error } = await supabase
       .from("notifications")
       .select(
@@ -45,6 +46,7 @@ const NotificationsModal = ({ profileId, onClose }: Props) => {
       `,
       )
       .eq("user_id", profileId)
+      .eq("type", "emotion")
       .order("created_at", { ascending: false })
       .limit(50);
 
