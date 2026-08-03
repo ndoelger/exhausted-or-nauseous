@@ -98,7 +98,7 @@ const UserProfileModal = ({ user, myUserId, onClose }: Props) => {
               disabled={loading}
               style={styles.primary}
             >
-              <Text style={styles.primaryText}>ADD PEEP</Text>
+              <Text style={styles.primaryText}>ADD FRIEND</Text>
             </Pressable>
           )}
           {status === "pending_sent" && (

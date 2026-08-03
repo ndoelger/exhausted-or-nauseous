@@ -1,16 +1,8 @@
 /**
- * Expo push sender — triggered by a Database Webhook on public.notifications INSERT.
+ * Expo push sender — triggered when public.notifications gets an INSERT
+ * (via DB trigger forward_notification_to_push → pg_net, or a Dashboard webhook).
  *
- * REQUIRED before production (verify in dashboard):
- * 1. Create an Expo access token (expo.dev → Access tokens), enable Enhanced Security
- * 2. npx supabase secrets set EXPO_ACCESS_TOKEN=your_token  (on the app’s branch)
- * 3. npx supabase functions deploy push --no-verify-jwt
- * 4. Dashboard → Database → Webhooks → create hook:
- *    - table: notifications, event: Insert
- *    - type: Supabase Edge Functions → push
- *    - auth header: Bearer <service_role_key>
- *
- * Without 2–4, YO notifications stay in-app only (no device push).
+ * Requires EXPO_ACCESS_TOKEN secret when Expo Enhanced Security is on.
  */
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -42,18 +34,16 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const { data: profile, error } = await supabase
-      .from("profiles")
-      .select("expo_push_token")
-      .eq("id", payload.record.user_id)
-      .single();
+    // Prefer security-definer RPC (works with column-level grants on profiles)
+    const { data: token, error } = await supabase.rpc("get_expo_push_token", {
+      target_user: payload.record.user_id,
+    });
 
     if (error) {
-      console.error("profile lookup failed", error);
+      console.error("token lookup failed", error);
       return Response.json({ error: error.message }, { status: 500 });
     }
 
-    const token = profile?.expo_push_token;
     if (!token) {
       console.log("no push token for user", payload.record.user_id);
       return Response.json({ skipped: true, reason: "no_token" });

@@ -51,6 +51,27 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
 
   useEffect(() => {
     loadUnread();
+
+    // Live badge when friends ping you
+    const channel = supabase
+      .channel(`notes:${profile.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${profile.id}`,
+        },
+        () => {
+          setUnreadCount((n) => n + 1);
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [profile.id]);
 
   useEffect(() => {
@@ -95,6 +116,14 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
             onPress={() => setShowNotificationsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
           >
+            <Text style={styles.navLabel}>NOTES</Text>
+            {unreadCount > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </Text>
+              </View>
+            )}
           </Pressable>
           <Pressable
             onPress={() => setShowFriendsModal(true)}

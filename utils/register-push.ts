@@ -53,10 +53,13 @@ export async function registerPushToken(userId: string) {
     const token = tokenResult.data;
     console.log("[push] token", token);
 
+    // Select only public columns — expo_push_token is not SELECT-able by clients
     const { error } = await supabase
       .from("profiles")
       .update({ expo_push_token: token })
-      .eq("id", userId);
+      .eq("id", userId)
+      .select("id")
+      .single();
 
     if (error) {
       console.error("[push] failed to save token", error);
