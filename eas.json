@@ -24,6 +24,17 @@
       "ios": {
         "simulator": true
       }
+    },
+    "production-device": {
+      "distribution": "internal",
+      "environment": "production"
+    },
+    "production-simulator": {
+      "distribution": "internal",
+      "environment": "production",
+      "ios": {
+        "simulator": true
+      }
     }
   },
   "submit": {

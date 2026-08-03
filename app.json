@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "exhausted-or-nauseous",
+    "name": "Exhausted or Nauseous",
     "slug": "exhausted-or-nauseous",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,10 +8,9 @@
     "scheme": "exhaustedornauseous",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
+      "icon": "./assets/images/icon.png",
       "infoPlist": {
         "UIBackgroundModes": [
-          "remote-notification",
           "remote-notification"
         ],
         "ITSAppUsesNonExemptEncryption": false

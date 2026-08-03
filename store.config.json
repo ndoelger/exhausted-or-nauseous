@@ -1,0 +1,60 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "copyright": "2026 Nicholas Doelger",
+    "categories": ["SOCIAL_NETWORKING", "LIFESTYLE"],
+    "advisory": {
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gambling": false,
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "unrestrictedWebAccess": false,
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "kidsAgeBand": null,
+      "ageRatingOverride": "NONE",
+      "koreaAgeRatingOverride": "NONE"
+    },
+    "info": {
+      "en-US": {
+        "title": "Exhausted or Nauseous",
+        "subtitle": "Tell friends how you feel",
+        "description": "Exhausted or Nauseous is a tiny social status app for when words are too much.\n\nTap Exhausted or Nauseous to let your friends know how you’re doing. Add friends, see their vibe, and get a ping when they check in.\n\n• One-tap status for friends\n• Simple profiles with optional photo\n• Friend requests and search\n• Push notifications when friends update\n\nSign in with your phone number. No endless feed — just the signal.",
+        "keywords": [
+          "friends",
+          "status",
+          "mood",
+          "social",
+          "exhausted",
+          "nauseous",
+          "check in",
+          "vibe",
+          "notifications"
+        ],
+        "promoText": "One tap. Your friends know.",
+        "releaseNotes": "First App Store release.",
+        "supportUrl": "https://ndoelger.github.io/exhausted-or-nauseous/support.html",
+        "marketingUrl": "https://ndoelger.github.io/exhausted-or-nauseous/",
+        "privacyPolicyUrl": "https://ndoelger.github.io/exhausted-or-nauseous/privacy.html"
+      }
+    },
+    "review": {
+      "firstName": "Nicholas",
+      "lastName": "Doelger",
+      "email": "doelgern@gmail.com",
+      "phone": "+18609166904",
+      "demoRequired": false,
+      "notes": "Sign in with phone OTP (SMS). After verify, complete onboarding (name, username, optional photo). To test friend flows, create a second account on another device. Emotion taps notify accepted friends."
+    },
+    "release": {
+      "automaticRelease": false
+    }
+  }
+}
