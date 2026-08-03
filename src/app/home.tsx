@@ -95,14 +95,6 @@ const Home = ({ profile, updateEmotion, setProfile }: Props) => {
             onPress={() => setShowNotificationsModal(true)}
             style={({ pressed }) => [styles.navHit, pressed && styles.pressed]}
           >
-            <Text style={styles.navLabel}>YO</Text>
-            {unreadCount > 0 && (
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </Text>
-              </View>
-            )}
           </Pressable>
           <Pressable
             onPress={() => setShowFriendsModal(true)}

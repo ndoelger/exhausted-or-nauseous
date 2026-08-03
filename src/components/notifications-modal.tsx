@@ -1,7 +1,7 @@
 import AnimatedModal from "@/components/animated-modal";
 import Avatar from "@/components/avatar";
 import { font } from "@/fonts";
-import { colors, type } from "@/theme";
+import { colors } from "@/theme";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { supabase } from "../../utils/supabase";
@@ -79,8 +79,6 @@ const NotificationsModal = ({ profileId, onClose }: Props) => {
     <AnimatedModal onClose={onClose} contentStyle={styles.card}>
       {(close) => (
         <>
-          <Text style={styles.title}>YO</Text>
-
           {loading ? (
             <Text style={styles.empty}>LOADING...</Text>
           ) : items.length === 0 ? (
@@ -128,10 +126,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 8,
     padding: 24,
-  },
-  title: {
-    ...type.title,
-    marginBottom: 12,
   },
   list: {
     maxHeight: 360,
