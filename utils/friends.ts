@@ -58,6 +58,7 @@ export async function listFriends(profileId: string): Promise<{
     return { friends: [], requests: [], error };
   }
 
+  // Discerns if the to_profile or from_profile is the current profile
   const friends: FriendRow[] = [];
   for (const row of accepted.data ?? []) {
     const other =

@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -203,7 +204,11 @@ const Onboarding = ({ profile, onComplete }: Props) => {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.wrapper}
       >
-        <View style={styles.form}>
+        <ScrollView
+          contentContainerStyle={styles.form}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={styles.title}>SET UP YOUR PROFILE</Text>
 
           <Pressable
@@ -259,7 +264,7 @@ const Onboarding = ({ profile, onComplete }: Props) => {
               {saving ? "SAVING…" : "CONTINUE"}
             </Text>
           </Pressable>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </View>
   );
@@ -288,14 +293,15 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   wrapper: {
+    flex: 1,
     width: "100%",
-    gap: 16,
   },
   form: {
     width: "100%",
     maxWidth: 360,
     alignSelf: "center",
     gap: 12,
+    paddingBottom: 24,
   },
   title: {
     ...type.title,
